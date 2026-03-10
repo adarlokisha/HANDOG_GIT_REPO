@@ -1,0 +1,6 @@
+Gideon H. Bisnar
+
+Login Page
+ - Front end
+ - Combined button for organizer and volunteer reflected in the prototype
+ - Code will be reused as template for other pages especially the gradient part of body.

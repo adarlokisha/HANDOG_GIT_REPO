@@ -1,0 +1,161 @@
+﻿/* ==========================================================================
+   BODY (This is the foundation)
+   Applies to the entire page. It resets default browser spacing.
+   ========================================================================== */
+* {
+    box-sizing: border-box; /* Ensures padding doesn't make elements wider than 100% */
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* This is the font we are using for the whole website. */
+}
+
+body {
+    /* linear-gradient goes from top (cyan) to middle (light blue) to bottom (white) */
+    background: linear-gradient(to bottom, #1dd3f8 0%, #c4f0fa 150px, #ffffff 300px);
+    /* Kung gusto mo ichange ung height nung color blue to yellow gradient, change mo lang ung pixels. */
+
+    background-repeat: no-repeat; /* Prevents the gradient from repeating if you do scroll */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   HEADER PART
+   ========================================================================== */
+.top-header {
+    background: transparent; 
+    height: 80px;
+    width: 100%;
+    display: flex;
+    align-items: center; 
+    padding: 0 40px;
+}
+
+.home-text {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* ==========================================================================
+   MAIN CONTENT & BIG LOGO
+   This is the containers for the Logos, make adjustments here if need.
+   ========================================================================== */
+.main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    padding-bottom: 40px; 
+}
+
+.logo-container {
+    margin-bottom: 30px; 
+}
+
+/* ==========================================================================
+   THE LOGOS
+   Resize Logos if kailangan
+   ========================================================================== */
+
+.main-logo {
+    max-width: 350px; 
+    height: auto; 
+}
+
+.small-logo {
+    height: 40px;
+    width: auto;
+}
+
+
+/* ==========================================================================
+    Login Cards
+   ========================================================================== */
+.login-card {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 550px; 
+    padding: 50px; 
+    border-radius: 30px; 
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.08); 
+    border: 1px solid #eaeaea; 
+}
+
+/* ==========================================================================
+    Textboxes
+   ========================================================================== */
+.input-group {
+    margin-bottom: 20px; 
+}
+
+.form-input {
+    width: 100%;
+    padding: 18px 20px; 
+    background-color: #f4f4f4;
+    border: none; 
+    border-radius: 10px; 
+    font-size: 15px;
+    color: #333;
+    outline: none; 
+}
+
+/* ==========================================================================
+     Hyperlinks
+   ========================================================================== */
+.options-row {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+.forgot-link {
+    color: #888; 
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+    BUTTONS w/ DECOR
+   ========================================================================== */
+.btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 30px; 
+    color: #ffffff; 
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: opacity 0.2s ease;
+}
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+    .btn-gradient {
+
+        background: linear-gradient(to right, #00dcf0 0%, #f7b700 100%);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
+    }
+
+.signup-prompt {
+    text-align: center;
+    margin-top: 20px;
+    color: #888;
+}
+
+.signup-link {
+    color: #00dcf0;
+    text-decoration: underline;
+}
