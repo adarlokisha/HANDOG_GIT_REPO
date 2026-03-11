@@ -9,12 +9,10 @@
 }
 
 body {
-    background: linear-gradient(to bottom, #1dd3f8 0%, #c4f0fa 150px, #ffffff 300px);
+    background: linear-gradient(to bottom, #1dd3f8 2%, #c4f0fa 90px, #ffffff 200px);
     background-repeat: no-repeat;
     min-height: 100vh;
-    color: #333; 
-    display: flex;
-    flex-direction: column;
+    color: #1a1a1a;
 }
 
 /* ==========================================================================
@@ -68,12 +66,14 @@ body {
    ========================================================================== */
 .main-content {
     flex: 1;
-    padding: 20px 10%; 
+    padding: 20px 10%;
     max-width: 1200px;
-    margin: 0 auto; 
+    margin: 0 auto;
     width: 100%;
     display: flex;
     flex-direction: column;
+
+    background-color: #ffffff;
 }
 
 /* ==========================================================================
@@ -95,6 +95,7 @@ body {
 .page-subtitle {
     font-style: italic;
     font-size: 15px;
+    font-weight:400;
     color: #4a4a4a;
 }
 
