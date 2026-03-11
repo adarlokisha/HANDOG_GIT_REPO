@@ -73,8 +73,14 @@
     <Content Include="images\IT133 - 7.png" />
     <Content Include="images\IT133 - 8.png" />
     <Content Include="stylesheet\default.css" />
+    <Content Include="stylesheet\events.css" />
+    <Content Include="stylesheet\home.css" />
+    <Content Include="stylesheet\request.css" />
     <Content Include="Web.config" />
     <Content Include="web\default.aspx" />
+    <Content Include="web\events.aspx" />
+    <Content Include="web\home.aspx" />
+    <Content Include="web\request.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -84,6 +90,27 @@
     </Compile>
     <Compile Include="web\default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="web\events.aspx.cs">
+      <DependentUpon>events.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="web\events.aspx.designer.cs">
+      <DependentUpon>events.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="web\home.aspx.cs">
+      <DependentUpon>home.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="web\home.aspx.designer.cs">
+      <DependentUpon>home.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="web\request.aspx.cs">
+      <DependentUpon>request.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="web\request.aspx.designer.cs">
+      <DependentUpon>request.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

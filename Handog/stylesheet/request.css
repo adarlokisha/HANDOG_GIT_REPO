@@ -1,0 +1,195 @@
+﻿/* ==========================================================================
+    BASE STYLES
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(to bottom, #1dd3f8 0%, #c4f0fa 150px, #ffffff 300px);
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    color: #333; 
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+    HEADER & NAVIGATION
+   ========================================================================== */
+.top-header {
+    background: transparent;
+    height: 90px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.small-logo {
+    height: 45px;
+    width: auto;
+}
+
+.nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+    .nav-link:hover {
+        text-decoration: underline;
+    }
+
+    .nav-link.active {
+        font-size: 22px;
+        font-weight: 900;
+        text-decoration: underline;
+    }
+
+.logout-link {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+    MAIN CONTENT LAYOUT
+   ========================================================================== */
+.main-content {
+    flex: 1;
+    padding: 20px 10%; 
+    max-width: 1200px;
+    margin: 0 auto; 
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+    PAGE TITLE AREA
+   ========================================================================== */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; 
+}
+
+.page-title {
+    color: #f7b700; 
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 5px;
+}
+
+.page-subtitle {
+    font-style: italic;
+    font-size: 15px;
+    color: #4a4a4a;
+}
+
+.bell-icon {
+    height: 30px;
+    cursor: pointer;
+}
+
+.title-divider {
+    border: none;
+    border-top: 2px solid #888; /* Dark grey line */
+    margin: 15px 0 30px 0;
+}
+
+/* ==========================================================================
+    SCROLLABLE CARDS AREA
+   ========================================================================== */
+.cards-scroll-container {
+  
+    max-height: 50vh;
+    overflow-y: auto; 
+    padding-right: 20px; 
+    margin-bottom: 30px;
+}
+
+    .cards-scroll-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .cards-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .cards-scroll-container::-webkit-scrollbar-thumb {
+        background: #cccccc;
+        border-radius: 10px;
+    }
+
+/* ==========================================================================
+    INDIVIDUAL REQUEST CARDS
+   ========================================================================== */
+.request-card {
+    background-color: #f4f4f4; 
+    border-radius: 30px;
+    padding: 30px 40px;
+    margin-bottom: 25px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08); 
+    border: 1px solid #e0e0e0;
+}
+
+.requestor-name {
+    font-size: 14px;
+    font-style: italic;
+    font-weight: bold;
+    color: #888888;
+}
+
+.card-divider {
+    border: none;
+    border-top: 1px solid #cccccc;
+    margin: 10px 0 15px 0;
+}
+
+.request-text {
+    font-size: 16px;
+    color: #888888;
+    line-height: 1.5;
+}
+
+.bold-label {
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   7. ADD REQUEST BUTTON
+   ========================================================================== */
+.button-container {
+    display: flex;
+    justify-content: flex-end; 
+}
+
+.btn-add {
+    background-color: #fbc14b; 
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    border-radius: 30px;
+    padding: 15px 35px;
+    cursor: pointer;
+    box-shadow: 0px 4px 10px rgba(251, 193, 75, 0.4); 
+    transition: opacity 0.2s;
+}
+
+    .btn-add:hover {
+        opacity: 0.9;
+    }

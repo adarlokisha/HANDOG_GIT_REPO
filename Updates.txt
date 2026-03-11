@@ -4,3 +4,10 @@ Login Page
  - Front end
  - Combined button for organizer and volunteer reflected in the prototype
  - Code will be reused as template for other pages especially the gradient part of body.
+
+Templates for Volunteer Side
+ - Home
+ - Request
+ - Event
+
+#Idea is to create a pop up for the forms instead of creating new pages.
