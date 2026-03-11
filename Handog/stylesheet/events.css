@@ -189,35 +189,46 @@ body {
 }
 
 .event-image {
-    flex: 1.5;
+    flex: 2;
     display: flex;
-    justify-content: center; 
-    align-items: center; 
+    justify-content: center;
+    align-items: center;
+    /* Ensure the background image covers the area without leaking */
     background-size: cover;
     background-position: center;
-    border-left: 1px solid #333; 
+    background-repeat: no-repeat;
+    border-left: 1px solid #333;
+    position: relative; /* Useful if you want to use absolute positioning for the button later */
+    overflow: hidden; /* Keeps everything strictly inside the card borders */
 }
 
+/* Adjust the button slightly if needed to look exactly like the reference */
+
 .image-1 {
-    background-image: linear-gradient(rgba(18, 172, 176, 0.65), rgba(18, 172, 176, 0.65)), url('../images/event-placeholder1.png');
+    background-image: linear-gradient(rgba(18, 172, 176, -2), rgba(18, 172, 176, 0)), url('../images/Event1.jpg');
 }
 
 .image-2 {
-    background-image: linear-gradient(rgba(18, 172, 176, 0.65), rgba(18, 172, 176, 0.65)), url('../images/event-placeholder2.png');
+    background-image: linear-gradient(rgba(18, 172, 176, -2), rgba(18, 172, 176, 0)), url('../images/Event2.jpg');
 }
 
 .btn-action {
-    background-color: #fbc14b; 
+    background-color: #fbc14b;
     color: #000000;
     font-weight: 900;
-    font-size: 16px;
+    font-size: 14px; /* Scaled down slightly to match reference */
     border: none;
-    border-radius: 30px;
-    padding: 12px 30px;
+    border-radius: 10px; /* Reduced radius for a more rectangular look like the pic */
+    padding: 10px 25px;
     cursor: pointer;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); 
-    transition: opacity 0.2s;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.4);
+    transition: transform 0.1s;
+    z-index: 10; /* Ensures it stays in front of the background */
 }
+
+    .btn-action:active {
+        transform: translateY(2px);
+    }
 
     .btn-action:hover {
         opacity: 0.9;

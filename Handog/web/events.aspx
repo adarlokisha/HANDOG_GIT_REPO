@@ -50,7 +50,7 @@
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tincidunt mauris sed ipsum auctor venenatis.
                         </p>
                     </div>
-                    <div class="event-image image-1">
+                   <div class="event-image image-1">
                         <asp:Button ID="btnViewDetails" runat="server" Text="VIEW DETAILS" CssClass="btn-action" />
                     </div>
                 </div>
