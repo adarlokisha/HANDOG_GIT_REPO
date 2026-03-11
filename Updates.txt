@@ -11,3 +11,8 @@ Templates for Volunteer Side
  - Event
 
 #Idea is to create a pop up for the forms instead of creating new pages.
+
+Kisha Hyacinth Adarlo
+
+Home Page
+- Fix page to match with figma prototype
