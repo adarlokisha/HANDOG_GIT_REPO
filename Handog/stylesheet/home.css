@@ -68,7 +68,7 @@ body {
 .hero-section {
     padding: 40px 10%;
     position: relative;
-    background-color: transparent; 
+    background-color: #ffffff; 
 }
 
 .bell-container {
@@ -180,12 +180,13 @@ body {
 }
 
 .story-logo {
-    max-width: 250px;
+    max-width: 400px;
     margin-bottom: 20px;
 }
 
 .story-card p {
     font-size: 15px;
+    font-weight: 600;
     line-height: 1.6;
     color: #333;
 }

@@ -33,7 +33,7 @@
                         <p>Whether you are a volunteer, a requester, a business, or an organization, Handog is the perfect place for you to manage your events.</p>
                     </div>
                     <div class="hero-image-container">
-                        <asp:Image ID="imgVolunteers" runat="server" ImageUrl="~/images/volunteers.png" AlternateText="Volunteers" CssClass="hero-image" />
+                        <asp:Image ID="imgVolunteers" runat="server" ImageUrl="~/images/Volunteer.jpeg" AlternateText="Volunteers" CssClass="hero-image" />
                     </div>
                 </div>
             </section>
