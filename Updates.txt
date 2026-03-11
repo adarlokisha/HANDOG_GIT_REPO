@@ -14,5 +14,6 @@ Templates for Volunteer Side
 
 Kisha Hyacinth Adarlo
 
-Home Page
-- Fix page to match with figma prototype
+Home Page, Request Page, and Events Page
+- Updated to match with figma prototype
+- images (bell-icon, volunteer, Event1, and Event2)
