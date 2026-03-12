@@ -31,7 +31,9 @@
                     <p class="page-subtitle">Request for a Community Engagement to be held in your area:</p>
                 </div>
                 <div class="icon-area">
-                    <asp:Image ID="imgBell" runat="server" ImageUrl="~/images/bell-icon.png" AlternateText="Notifications" CssClass="bell-icon" />
+                    <asp:LinkButton ID="btnBell" runat="server" OnClick="btnBell_Click">
+                            <asp:Image ID="imgBell" runat="server" ImageUrl="~/images/bell-icon.png" AlternateText="Notifications" CssClass="bell-icon" />
+                    </asp:LinkButton>                
                 </div>
             </div>
 
@@ -62,8 +64,29 @@
             </div>
 
         </main>
+            
 
-        
+        <asp:Panel ID="pnlNotifications" runat="server" CssClass="modal-overlay" Visible="false">
+            <div class="notification-card">
+                <div class="modal-header">
+                    <asp:Image ID="imgModalBell" runat="server" ImageUrl="~/images/bell-icon.png" CssClass="modal-bell-icon" />
+                    <span class="modal-title">NOTIFICATIONS</span>
+                </div>
+                <div class="notification-list">
+                    <div class="notif-item">
+                        <i class="info-icon">ⓘ</i> <span>New event has been added!</span>
+                    </div>
+                    <div class="notif-item success">
+                        <i class="info-icon">ⓘ</i> <span>You've been accepted to volunteer!</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <asp:LinkButton ID="btnCloseNotif" runat="server" OnClick="btnCloseNotif_Click" CssClass="modal-close">
+                        <span class="close-arrow">➔</span> CLOSE
+                    </asp:LinkButton>
+                </div>
+            </div>
+        </asp:Panel>
     </form>
 </body>
 </html>
