@@ -14,7 +14,8 @@ Templates for Volunteer Side
 
 Kisha Hyacinth Adarlo
 
-Home Page, Request Page, and Events Page
+Home Page, Request Page, and Events Page for Volunteer Side
 - Updated to match with figma prototype
 - images (bell-icon, volunteer, Event1, and Event2)
 - Connect logout to the default page.
+- Used a modal dialog to display notifications.
