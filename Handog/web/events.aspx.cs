@@ -18,5 +18,18 @@ namespace Handog.web
             Session.Abandon(); // Clears the user session
             Response.Redirect("default.aspx"); // Sends them back to login
         }
+        protected void btnBell_Click(object sender, EventArgs e)
+        {
+            pnlNotifications.Visible = true;
+            // This ensures the overlay uses flexbox to center the card
+            pnlNotifications.Style.Add("display", "flex");
+        }
+
+        protected void btnCloseNotif_Click(object sender, EventArgs e)
+        {
+            pnlNotifications.Visible = false;
+            // Remove the style when closing
+            pnlNotifications.Style.Remove("display");
+        }
     }
 }
