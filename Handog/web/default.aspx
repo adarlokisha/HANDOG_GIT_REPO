@@ -39,7 +39,7 @@
                     <asp:HyperLink ID="lnkForgotPassword" runat="server" NavigateUrl="~/ForgotPassword.aspx" CssClass="forgot-link">Forgot Password</asp:HyperLink>
                 </div>
 
-                <asp:Button ID="btnLogin" runat="server" Text="LOGIN" CssClass="btn btn-gradient" />
+                <asp:Button ID="btnLogin" runat="server" Text="LOGIN" CssClass="btn btn-gradient" OnClick="btnLogin_Click"/>
 
                 <div class="signup-prompt">
                     Don't have an account? <asp:HyperLink ID="lnkSignUp" runat="server" NavigateUrl="~/SignUp.aspx" CssClass="signup-link">Sign up.</asp:HyperLink>

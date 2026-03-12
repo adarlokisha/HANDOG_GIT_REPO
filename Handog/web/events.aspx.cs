@@ -13,5 +13,10 @@ namespace Handog.web
         {
 
         }
+        protected void btnLogout_Click(object sender, EventArgs e)
+        {
+            Session.Abandon(); // Clears the user session
+            Response.Redirect("default.aspx"); // Sends them back to login
+        }
     }
 }

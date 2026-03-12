@@ -19,7 +19,7 @@
                 <a href="events.aspx" class="nav-link">Events</a>
             </div>
             <div class="nav-right">
-                <asp:LinkButton ID="btnLogout" runat="server" CssClass="nav-link logout-link">LOGOUT</asp:LinkButton>
+                <asp:LinkButton ID="btnLogout" runat="server" onClick="btnLogout_Click" CssClass="nav-link logout-link">LOGOUT</asp:LinkButton>
             </div>
         </header>
 
@@ -62,6 +62,8 @@
             </div>
 
         </main>
+
+        
     </form>
 </body>
 </html>

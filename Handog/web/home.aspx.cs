@@ -13,5 +13,20 @@ namespace Handog.web
         {
 
         }
+
+        protected void btnLogout_Click(object sender, EventArgs e)
+        {
+            Session.Abandon(); // Clears the user session
+            Response.Redirect("default.aspx"); // Sends them back to login
+        }
+        protected void btnBell_Click(object sender, EventArgs e)
+        {
+            pnlNotifications.Visible = true;
+        }
+
+        protected void btnCloseNotif_Click(object sender, EventArgs e)
+        {
+            pnlNotifications.Visible = false;
+        }
     }
 }
