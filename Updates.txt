@@ -17,3 +17,4 @@ Kisha Hyacinth Adarlo
 Home Page, Request Page, and Events Page
 - Updated to match with figma prototype
 - images (bell-icon, volunteer, Event1, and Event2)
+- Connect logout to the default page.
