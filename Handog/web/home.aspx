@@ -57,7 +57,8 @@
                 <h2 class="story-title">Our Story</h2>
                 <div class="story-card">
                     <asp:Image ID="imgStoryLogo" runat="server" ImageUrl="~/images/HandogBig1.png" AlternateText="Handog Logo" CssClass="story-logo" />
-                    <p>Our platform was created with one simple goal...</p>
+                    <p>Our platform was created with one simple goal — to make community engagement easier, more organized, and more accessible for everyone. 
+                        We saw the gap between people who want to serve, those who need support, and organizers who are willing to lead initiatives, but lack a centralized system to connect them all.</p>
                 </div>
             </section>
         </main>
