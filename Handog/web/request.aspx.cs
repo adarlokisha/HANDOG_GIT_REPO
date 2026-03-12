@@ -28,5 +28,32 @@ namespace Handog.web
         {
             pnlNotifications.Visible = false;
         }
+        protected void btnAddRequest_Click(object sender, EventArgs e)
+        {
+            pnlAddRequest.Visible = true;
+        }
+
+        protected void btnCancelRequest_Click(object sender, EventArgs e)
+        {
+            pnlAddRequest.Visible = false;
+            rblRequestType.ClearSelection();
+            phFormFields.Visible = false;
+        }
+        protected void rblRequestType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            phFormFields.Visible = true;
+            if (rblRequestType.SelectedValue == "Inquiry")
+            {
+                lblSubject.Text = "INQUIRY SUBJECT*";
+                lblDetails.Text = "INQUIRY DETAILS*";
+                btnPostRequest.Text = "+ POST INQUIRY";
+            }
+            else
+            {
+                lblSubject.Text = "REQUEST NATURE*";
+                lblDetails.Text = "REQUEST DETAILS*";
+                btnPostRequest.Text = "+ POST ASSISTANCE";
+            }
+        }
     }
 }

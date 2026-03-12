@@ -190,6 +190,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="images\back-icon.png" />
     <Content Include="images\bell-icon.png" />
     <Content Include="images\Event1.jpg" />
     <Content Include="images\Event2.jpg" />
