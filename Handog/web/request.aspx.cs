@@ -55,5 +55,20 @@ namespace Handog.web
                 btnPostRequest.Text = "+ POST ASSISTANCE";
             }
         }
+        protected void btnCloseModals_Click(object sender, EventArgs e)
+        {
+            // Hide the registration panel
+            pnlRegistration.Visible = false;
+
+            // Also hide notifications if they are open
+            if (pnlNotifications != null)
+            {
+                pnlNotifications.Visible = false;
+                pnlNotifications.Style.Remove("display");
+            }
+
+            // Clean up any flex styling if applied
+            pnlRegistration.Style.Remove("display");
+        }
     }
 }
