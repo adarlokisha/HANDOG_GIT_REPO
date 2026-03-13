@@ -1,0 +1,330 @@
+﻿/* ==========================================================================
+    1. BASE & BACKGROUND (Organizer Yellow Theme)
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(to bottom, #fbc14b 2%, #fde0a3 90px, #ffffff 200px);
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    color: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+    2. HEADER & NAVIGATION
+   ========================================================================== */
+.top-header {
+    background: transparent;
+    height: 90px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.small-logo {
+    height: 45px;
+    width: auto;
+}
+
+.nav-link {
+    color: #0c1b33;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+    .nav-link.active {
+        font-size: 22px;
+        font-weight: 900;
+        text-decoration: underline;
+    }
+
+.logout-link {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+    3. MAIN CONTENT & TITLE AREA
+   ========================================================================== */
+
+.bell-container {
+    display: flex;
+    justify-content: flex-end; /* Pushes the bell to the far right */
+    width: 100%;
+    margin-bottom: 10px; /* Gives a little space between the bell and the title */
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px 10%;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.page-title {
+    color: #1dd3f8; /* Cyan title */
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 5px;
+}
+
+.page-subtitle {
+    font-style: italic;
+    font-size: 15px;
+    color: #4a4a4a;
+}
+
+.bell-icon {
+    height: 30px;
+    cursor: pointer;
+}
+
+.title-divider {
+    border: none;
+    border-top: 2px solid #888;
+    margin: 15px 0 10px 0;
+}
+
+.pending-label {
+    font-size: 14px;
+    font-weight: 900;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+/* ==========================================================================
+    4. SCROLLABLE CARDS AREA
+   ========================================================================== */
+.cards-scroll-container {
+    max-height: 55vh;
+    overflow-y: auto;
+    padding-right: 20px;
+    margin-bottom: 30px;
+}
+
+    /* Custom Scrollbar */
+    .cards-scroll-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .cards-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .cards-scroll-container::-webkit-scrollbar-thumb {
+        background: #cccccc;
+        border-radius: 10px;
+    }
+
+/* ==========================================================================
+    5. INDIVIDUAL REQUEST CARDS
+   ========================================================================== */
+.request-card {
+    background-color: #f4f4f4;
+    border-radius: 30px;
+    padding: 25px 40px;
+    margin-bottom: 25px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e0e0e0;
+}
+
+.requestor-name {
+    font-size: 14px;
+    font-style: italic;
+    font-weight: bold;
+    color: #888888;
+    text-transform: uppercase;
+}
+
+.card-divider {
+    border: none;
+    border-top: 1px solid #cccccc;
+    margin: 10px 0 15px 0;
+}
+
+.request-text {
+    font-size: 16px;
+    color: #888888;
+    line-height: 1.5;
+}
+
+.bold-label {
+    font-weight: bold;
+}
+
+/* Action Buttons (Accept, Reject, Answer) */
+.action-buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.action-icon {
+    height: 30px;
+    width: auto;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+    .action-icon:hover {
+        transform: scale(1.1);
+    }
+
+.btn-answer {
+    background-color: #fbc14b;
+    color: #000000;
+    font-weight: 900;
+    font-size: 14px;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 20px;
+    cursor: pointer;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.2s;
+}
+
+    .btn-answer:hover {
+        opacity: 0.9;
+    }
+
+/* ==========================================================================
+    6. MODALS (Notifications & Answer Inquiry)
+   ========================================================================== */
+.modal-overlay {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999 !important;
+}
+
+.notification-card {
+    background-color: #ffffff;
+    width: 420px;
+    min-height: 400px;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.modal-bell-icon {
+    height: 22px;
+    width: auto;
+    margin-right: 10px;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 900;
+    color: #000000;
+    letter-spacing: 0.5px;
+}
+
+/* Answer Modal Specifics */
+.answer-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.answer-instructions {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.answer-textbox {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    resize: none;
+    outline: none;
+}
+
+    .answer-textbox:focus {
+        border-color: #fbc14b;
+    }
+
+.notification-list {
+    flex-grow: 1;
+}
+
+.notif-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    font-size: 15px;
+    color: #222222;
+}
+
+.exclam-icon {
+    height: 22px;
+    width: auto;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.modal-close {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #d32f2f;
+    text-decoration: underline;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.logout-icon {
+    height: 20px;
+    width: auto;
+}

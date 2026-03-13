@@ -1,0 +1,441 @@
+﻿/* ==========================================================================
+     BASE & BACKGROUND
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(to bottom, #fbc14b 2%, #fde0a3 90px, #ffffff 200px);
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    color: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+     IMAGE SIZING
+   ========================================================================== */
+.small-logo {
+    height: 45px;
+    width: auto;
+}
+
+.bell-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.bell-icon {
+    height: 25px;
+    width: auto;
+    cursor: pointer;
+}
+.hero-image {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+.modal-bell-icon {
+    height: 24px;
+    width: auto;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+/* ==========================================================================
+     HEADER & HERO
+   ========================================================================== */
+.top-header {
+    background: transparent; 
+    height: 90px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.nav-link {
+    color: #0c1b33; 
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    text-shadow: none; 
+}
+
+    .nav-link.active {
+        font-size: 22px;
+        font-weight: 900;
+        text-decoration: underline;
+    }
+
+.hero-section {
+    padding: 40px 10%;
+    background-color: transparent; 
+    position: relative;
+}
+.hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+}
+
+.hero-text {
+    flex: 1;
+}
+
+    .hero-text h1 {
+        font-size: 42px;
+        font-weight: 900;
+        margin-bottom: 20px;
+    }
+
+.hero-image-container {
+    flex: 1;
+    text-align: right;
+}
+
+/* ==========================================================================
+     ORGANIZER INPUTS & GRIDVIEW
+   ========================================================================== */
+.locales-section {
+    background-color: #fbc14b;
+    padding: 60px 10%;
+}
+
+.entry-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.input-label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.input-box {
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 5px 10px;
+    width: 140px;
+}
+
+.btn-add-blue {
+    background-color: #00dcf0;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 6px 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-clear-blue {
+    background-color: #1a56ff;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 6px 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.table-container {
+    background-color: #ffffff;
+    border: 1px solid #333;
+}
+
+/* Styling the GridView to look like your table */
+.locales-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.grid-header {
+    background-color: #d9d9d9 !important;
+    height: 40px;
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #999;
+}
+
+.locales-table td {
+    height: 50px;
+    padding: 10px;
+    border-bottom: 1px solid #cccccc;
+}
+
+.action-link {
+    color: #333;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+/* ==========================================================================
+     STORY SECTION
+   ========================================================================== */
+
+.story-section {
+    /* Keep whatever background gradient you currently have here! */
+    padding: 80px 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* This forces the title and card to the dead center of the screen */
+}
+
+.story-title {
+    color: #0c1b33;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.story-card {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 750px;
+    padding: 40px 60px;
+    border-radius: 20px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.story-logo {
+    max-width: 350px; 
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.story-card p {
+    font-size: 15px;
+    font-weight: normal;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* ==========================================================================
+    NOTIFICATION SIDEBAR (Drawer)
+   ========================================================================== */
+
+/* The dark background behind the sidebar */
+.notif-sidebar-overlay {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    display: flex !important;
+    justify-content: flex-end; /* This pushes the sidebar to the right edge */
+    z-index: 99999 !important;
+}
+
+/* The actual white/pale cyan panel */
+.notif-sidebar {
+    background-color: #f8fdfd; /* Very pale, clean background */
+    width: 380px;
+    height: 100vh; /* Stretches top to bottom */
+    display: flex;
+    flex-direction: column;
+    padding: 40px 30px;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1); /* Shadow on the left side */
+}
+
+/* --- Header --- */
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+}
+
+.title-wrapper {
+    display: flex;
+    align-items: center;
+    margin: 0 auto; /* Centers the title */
+    padding-left: 20px; /* Offsets the close button space */
+}
+
+.sidebar-bell {
+    height: 22px;
+    width: auto;
+    margin-right: 10px;
+}
+
+.sidebar-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #000000;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-close {
+    text-decoration: none;
+    color: #888;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.sidebar-close:hover {
+    color: #333;
+}
+
+/* --- List Items --- */
+.sidebar-list {
+    flex: 1; /* Pushes the footer to the very bottom */
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    font-size: 15px;
+    color: #222222;
+}
+
+.exclam-icon {
+    height: 22px;
+    width: auto;
+}
+
+.sidebar-divider {
+    border: none;
+    border-top: 1px solid #dcdcdc;
+    margin-top: 15px;
+}
+
+/* --- Footer --- */
+.sidebar-footer {
+    display: flex;
+    justify-content: flex-end; /* Pushes logout to the bottom right */
+    margin-bottom: 20px;
+}
+
+.sidebar-logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #d32f2f; /* Red text */
+    text-decoration: underline;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.logout-icon {
+    height: 24px;
+    width: auto;
+}
+
+/* ====== Notification pop up =========== */
+
+.modal-overlay {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    display: flex !important;
+    justify-content: center; 
+    align-items: center;
+    z-index: 99999 !important;
+}
+
+/* The white popup card */
+.notification-card {
+    background-color: #ffffff;
+    width: 420px; 
+    min-height: 450px;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    z-index: 100000 !important;
+}
+
+/* --- Header --- */
+.modal-header {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.modal-bell-icon {
+    height: 22px;
+    width: auto;
+    margin-right: 10px;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 900;
+    color: #000000;
+    letter-spacing: 0.5px;
+}
+
+/* --- List Items --- */
+.notification-list {
+    flex-grow: 1; 
+}
+
+.notif-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    font-size: 15px;
+    color: #222222;
+}
+
+.exclam-icon {
+    height: 22px;
+    width: auto;
+}
+
+/* --- Footer / Close Button --- */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end; 
+    margin-top: 20px;
+}
+
+.modal-close {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #d32f2f; 
+    text-decoration: underline;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.logout-icon {
+    height: 20px;
+    width: auto;
+}

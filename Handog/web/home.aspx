@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Handog - Home</title>
-    <link href="~/stylesheet/home.css" rel="stylesheet" type="text/css" />
+    <link href="~/stylesheet/home.css?v=2" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <form id="form1" runat="server">
