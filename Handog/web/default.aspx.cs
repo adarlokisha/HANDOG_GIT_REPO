@@ -1,76 +1,175 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Handog.web
 {
-    public partial class _default : System.Web.UI.Page
+    public partial class _default : Page
     {
-
         string connString = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Page initialization logic here
+            // nothing needed here for modal; login remains same
         }
 
+        // =========================
+        // LOGIN LOGIC
+        // =========================
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            // 1. Get the values from the TextBoxes
             string email = txtEmail.Text.Trim();
             string password = txtPassword.Text;
 
-            // 2. Add your validation logic here 
-            // (e.g., check against a database)
-            if (IsValidUser(email, password))
+            string role = GetUserRole(email, password);
+
+            if (!string.IsNullOrEmpty(role))
             {
-                // 3. Redirect to home.aspx
-                Response.Redirect("home.aspx");
+                Session["UserEmail"] = email;
+                Session["UserRole"] = role;
+                Session["AccountID"] = GetAccountID(email);
+
+                if (role == "Organizer")
+                    Response.Redirect("orghome.aspx");
+                else
+                    Response.Redirect("home.aspx");
             }
             else
             {
-                // Optional: Show an error message if login fails
                 ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Invalid Credentials');", true);
             }
         }
 
-        private bool IsValidUser(string email, string password)
+        private string GetUserRole(string email, string password)
         {
-            bool isValid = false;
-            string connString = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
+            string role = null;
 
-            using (SqlConnection conn = new SqlConnection(connString))
+            try
             {
-                // Use the exact column names from your screenshot: Account_ID, AccRole, Email
-                string query = "SELECT Account_ID, AccRole, Email FROM Account WHERE Email = @email AND AccPassword = @pass";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlConnection conn = new SqlConnection(connString))
                 {
-                    cmd.Parameters.AddWithValue("@email", email);
-                    cmd.Parameters.AddWithValue("@pass", password);
+                    string query = "SELECT AccRole FROM [Account] WHERE Email=@Email AND AccPassword=@Password";
 
-                    conn.Open();
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        if (reader.Read())
-                        {
-                            isValid = true;
-                            // This is the part that fixes your NullReferenceException!
-                            Session["AccountID"] = reader["Account_ID"].ToString();
-                            Session["UserRole"] = reader["AccRole"].ToString();
-                            Session["UserEmail"] = reader["Email"].ToString();
-                        }
+                        cmd.Parameters.AddWithValue("@Email", email);
+                        cmd.Parameters.AddWithValue("@Password", password);
+
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+
+                        if (result != null)
+                            role = result.ToString();
                     }
                 }
             }
-            return isValid;
+            catch (Exception ex)
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "alert",
+                    $"alert('Error: {ex.Message.Replace("'", "")}');", true);
+            }
+
+            return role;
+        }
+
+        private string GetAccountID(string email)
+        {
+            string accountID = null;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    string query = "SELECT Account_ID FROM [Account] WHERE Email=@Email";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Email", email);
+
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+
+                        if (result != null)
+                            accountID = result.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "alert",
+                    $"alert('Error: {ex.Message.Replace("'", "")}');", true);
+            }
+
+            return accountID;
+        }
+
+        // =========================
+        // SIGNUP LOGIC
+        // =========================
+        protected void btnSignup_Click(object sender, EventArgs e)
+        {
+            string fname = txtFirstName.Text.Trim();
+            string lname = txtLastName.Text.Trim();
+            string email = txtSignupEmail.Text.Trim();
+            string contact = txtContact.Text.Trim();
+            string password = txtSignupPassword.Text;
+            string churchID = txtChurchID.Text.Trim();
+
+            string role = rbVolunteer.Checked ? "Volunteer" : "Organizer";
+
+            // Simple validation
+            if (string.IsNullOrEmpty(fname) || string.IsNullOrEmpty(lname) ||
+                string.IsNullOrEmpty(email) || string.IsNullOrEmpty(contact) ||
+                string.IsNullOrEmpty(password))
+            {
+                lblSignupMessage.Text = "Please fill in all required fields.";
+                return;
+            }
+
+            if (rbOrganizer.Checked && string.IsNullOrEmpty(churchID))
+            {
+                lblSignupMessage.Text = "Organizer must provide a Church ID.";
+                return;
+            }
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    string query = @"INSERT INTO [Account]
+                (Lastname, Firstname, Email, ContactNum, AccPassword, AccRole, ChurchID)
+                VALUES
+                (@Last,@First,@Email,@Contact,@Pass,@Role,@ChurchID)";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Last", lname);
+                        cmd.Parameters.AddWithValue("@First", fname);
+                        cmd.Parameters.AddWithValue("@Email", email);
+                        cmd.Parameters.AddWithValue("@Contact", contact);
+                        cmd.Parameters.AddWithValue("@Pass", password);
+                        cmd.Parameters.AddWithValue("@Role", role);
+                        cmd.Parameters.AddWithValue("@ChurchID", string.IsNullOrEmpty(churchID) ? DBNull.Value : (object)churchID);
+
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                // Clear form and show success alert
+                txtFirstName.Text = txtLastName.Text = txtSignupEmail.Text = "";
+                txtContact.Text = txtSignupPassword.Text = txtChurchID.Text = "";
+                rbVolunteer.Checked = true;
+                rbOrganizer.Checked = false;
+
+                lblSignupMessage.Text = "";
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Sign up successful!');closeSignup();", true);
+            }
+            catch (Exception ex)
+            {
+                lblSignupMessage.Text = "Error: " + ex.Message;
+            }
         }
     }
 }
-
