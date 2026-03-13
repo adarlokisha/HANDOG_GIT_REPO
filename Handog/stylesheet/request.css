@@ -9,10 +9,14 @@
 }
 
 body {
-    background: linear-gradient(to bottom, #1dd3f8 2%, #c4f0fa 90px, #ffffff 200px);
-    background-repeat: no-repeat;
+    /* linear-gradient goes from top (cyan) to middle (light blue) to bottom (white) */
+    background: linear-gradient(to bottom, #1dd3f8 0%, #c4f0fa 150px, #ffffff 300px);
+    /* Kung gusto mo ichange ung height nung color blue to yellow gradient, change mo lang ung pixels. */
+
+    background-repeat: no-repeat; /* Prevents the gradient from repeating if you do scroll */
     min-height: 100vh;
-    color: #1a1a1a;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ==========================================================================
@@ -21,11 +25,12 @@ body {
 .top-header {
     background: transparent;
     height: 90px;
-    width: 100%;
+    width: 85%; /* Same as .main-content */
+    max-width: 1100px;
+    margin: 0 auto; /* Centers header with the white box */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 40px;
 }
 
 .nav-left {
@@ -66,14 +71,15 @@ body {
    ========================================================================== */
 .main-content {
     flex: 1;
-    padding: 20px 10%;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
+    background-color: #ffffff;
+    width: 85%;
+    max-width: 1100px;
+    margin: 30px auto; /* Adds vertical space so the blue shows at the top/bottom */
+    padding: 50px 80px;
+    border-radius: 12px;
+    box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.08); /* Soft depth effect */
     display: flex;
     flex-direction: column;
-
-    background-color: #ffffff;
 }
 
 /* ==========================================================================
@@ -141,8 +147,8 @@ body {
 .request-card {
     background-color: #f4f4f4; 
     border-radius: 30px;
-    padding: 30px 40px;
-    margin-bottom: 25px;
+    padding: 35px 50px;
+    margin-bottom: 30px;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08); 
     border: 1px solid #e0e0e0;
 }
@@ -296,8 +302,8 @@ body {
 /* REQUEST MODAL SPECIFIC */
 .request-modal-card {
     background-color: #ffffff;
-    width: 80%;
-    max-width: 900px;
+    width: 95%;
+    max-width: 800px;
     border-radius: 40px;
     padding: 40px;
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);

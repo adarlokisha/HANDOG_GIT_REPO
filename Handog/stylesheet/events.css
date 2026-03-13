@@ -153,7 +153,19 @@ body {
     background-color: #ffffff;
     min-height: 200px; 
 }
-
+.event-card-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Sits behind the buttons */
+    background-size: cover;
+    background-position: center;
+    /* This adds a slight teal/blue overlay to match your screenshot */
+    background-color: rgba(18, 172, 176, 0.3);
+    background-blend-mode: overlay;
+}
 .event-info {
     flex: 1; 
     padding: 30px;
@@ -189,17 +201,35 @@ body {
 }
 
 .event-image {
-    flex: 2;
+    width: 250px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    /* Ensure the background image covers the area without leaking */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    justify-content: center;
+    padding: 20px;
     border-left: 1px solid #333;
-    position: relative; /* Useful if you want to use absolute positioning for the button later */
-    overflow: hidden; /* Keeps everything strictly inside the card borders */
+    position: relative; /* Required for absolute positioning of background */
+    overflow: hidden; /* Keeps the image inside the card corners */
+}
+.status-container {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column; /* Stack button and label vertically */
+    align-items: center;
+    width: 100%;
+    gap: 10px; /* Space between button and JOINED text */
+}
+.joined-status {
+    display: block; /* Ensure it takes its own line */
+    width: 100%; /* Help with centering */
+    text-align: center;
+    color: #ffffff;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-decoration: underline;
+    font-size: 14px;
+    margin: 10px; /* Remove default margins */
 }
 
 /* Adjust the button slightly if needed to look exactly like the reference */
@@ -224,6 +254,8 @@ body {
     box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.4);
     transition: transform 0.1s;
     z-index: 10; /* Ensures it stays in front of the background */
+    display: block;
+    width: 160px; /* Adjust based on your design */
 }
 
     .btn-action:active {

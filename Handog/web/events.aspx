@@ -14,7 +14,6 @@
                 <asp:Image ID="imgSmallLogo" runat="server" ImageUrl="~/images/HandogLogo1.png" AlternateText="Handog Logo" CssClass="small-logo" />
                 <a href="home.aspx" class="nav-link">Home</a>
                 <a href="request.aspx" class="nav-link">Request</a>
-                
                 <a href="events.aspx" class="nav-link active">Events</a>
             </div>
             <div class="nav-right">
@@ -38,38 +37,41 @@
             <h1 class="page-title">EVENTS</h1>
 
             <div class="events-list">
-                <div class="event-card">
-                    <div class="event-info">
-                        <h2 class="event-name">COMMUNITY ENGAGEMENT</h2>
-                        <ul class="event-details">
-                            <li>Mapua Malayan Colleges Laguna</li>
-                            <li>January 23, 2026</li>
-                            <li>7:00AM - 6:00PM</li>
-                        </ul>
-                        <p class="event-desc"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                            Mauris tincidunt mauris sed ipsum auctor venenatis.p>
-                    </div>
-                    <div class="event-image image-1">
-                        <asp:Button ID="btnViewDetails" runat="server" Text="VIEW DETAILS" CssClass="btn-action" OnClick="btnViewDetails_Click" />
-                    </div>
-                </div>
+                <asp:Repeater ID="rptEvents" runat="server">
+                    <ItemTemplate>
+                        <div class="event-card">
+                            <div class="event-info">
+                                <h2 class="event-name"><%# Eval("EventTitle") %></h2>
+                                <ul class="event-details">
+                                    <li><%# Eval("VenueAddress") %></li>
+                                    <li><%# Eval("ImplementationDate", "{0:MMMM dd, yyyy}") %></li>
+                                    <li><%# Eval("EventStartTime", "{0:t}") %> - <%# Eval("EventEndTime", "{0:t}") %></li>
+                                </ul>
+                                <p class="event-desc"><%# Eval("Announcement") %></p>
+                            </div>
 
-                <div class="event-card">
-                    <div class="event-info">
-                        <h2 class="event-name">COMMUNITY ENGAGEMENT</h2>
-                        <ul class="event-details">
-                            <li>Mapua Malayan Colleges Laguna</li>
-                            <li>January 23, 2026</li>
-                            <li>7:00AM - 6:00PM</li>
-                        </ul>
-                        <p class="event-desc"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                            Mauris tincidunt mauris sed ipsum auctor venenatis.</p>
-                    </div>
-                    <div class="event-image image-2">
-                        <asp:Button ID="btnRegister" runat="server" Text="+ REGISTER" CssClass="btn-action" OnClick="btnRegister_Click" />
-                    </div>
-                </div>
-            </div>
+                            <div class="event-image">
+
+                                <div class="event-card-bg image-<%# Container.ItemIndex % 2 + 1 %>"></div>
+
+                                <div class="status-container">
+                                    <%-- Shows VIEW DETAILS and JOINED status only if user IS registered --%>
+                                    <asp:PlaceHolder ID="phJoined" runat="server" Visible='<%# IsUserRegistered(Eval("PublishedEventNum")) %>'>
+                                        <asp:Button ID="btnViewDetails" runat="server" Text="VIEW DETAILS" CssClass="btn-action" 
+                                            OnClick="btnViewDetails_Click" CommandArgument='<%# Eval("PublishedEventNum") %>' />
+                                        <div class="joined-status">JOINED</div>
+                                    </asp:PlaceHolder>
+
+                                    <%-- Shows + REGISTER button only if user is NOT registered --%>
+                                    <asp:Button ID="btnRegister" runat="server" Text="+ REGISTER" CssClass="btn-action" 
+                                        OnClick="btnRegister_Click" CommandArgument='<%# Eval("PublishedEventNum") %>'
+                                        Visible='<%# !IsUserRegistered(Eval("PublishedEventNum")) %>' />
+                                </div>
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </div> 
 
             <asp:Panel ID="pnlRegistration" runat="server" CssClass="modal-overlay" Visible="false">
                 <div class="registration-card">
@@ -82,7 +84,7 @@
                             </asp:LinkButton>
                             <div class="header-titles">
                                 <h1 class="reg-title">REGISTRATION</h1>
-                                <p class="reg-subtitle">COMMUNITY ENGAGEMENT TITLE</p>
+                                <p class="reg-subtitle"><asp:Label ID="lblRegEventTitleHeader" runat="server" /></p>
                             </div>
                         </div>
                     </div>
@@ -92,17 +94,17 @@
                     <div class="reg-content-split">
                         <div class="reg-details-side">
                             <h3 class="section-underline-title">EVENT DETAILS</h3>
-                            <div class="details-list">
-                                <p><strong>TITLE:</strong> Event Title</p>
-                                <p><strong>ORGANIZER NAME:</strong> Juan dela Cruz</p>
-                                <p><strong>ADDRESS:</strong> Pulo, Diezmo Road</p>
-                                <p><strong>VENUE:</strong> Brgy. Hall</p>
-                                <p><strong>EMAIL:</strong> email@gmail.com</p>
-                                <p><strong>CONTACT NUMBER:</strong> +63***********</p>
-                                <p><strong>DATE:</strong> January 31, 2026</p>
-                                <p><strong>START TIME:</strong> 7:00AM</p>
-                                <p><strong>END TIME:</strong> 12:00PM</p>
-                                <p><strong>MAX VOLUNTEERS:</strong> 50</p>
+                           <div class="details-list">
+                                <p><strong>TITLE:</strong> <asp:Label ID="lblRegTitle" runat="server" /></p>
+                                <p><strong>ORGANIZER NAME:</strong> <asp:Label ID="lblRegOrganizer" runat="server" /></p>
+                                <p><strong>ADDRESS:</strong> <asp:Label ID="lblRegAddress" runat="server" /></p>
+                                <p><strong>VENUE:</strong> <asp:Label ID="lblRegVenue" runat="server" /></p>
+                                <p><strong>EMAIL:</strong> <asp:Label ID="lblRegEmail" runat="server" /></p>
+                                <p><strong>CONTACT NUMBER:</strong> <asp:Label ID="lblRegContact" runat="server" /></p>
+                                <p><strong>DATE:</strong> <asp:Label ID="lblRegDate" runat="server" /></p>
+                                <p><strong>START TIME:</strong> <asp:Label ID="lblRegStart" runat="server" /></p>
+                                <p><strong>END TIME:</strong> <asp:Label ID="lblRegEnd" runat="server" /></p>
+                                <p><strong>MAX VOLUNTEERS:</strong> <asp:Label ID="lblRegMax" runat="server" /></p>
                             </div>
                         </div>
 
@@ -114,16 +116,16 @@
                                     <asp:RadioButton ID="rbParticipant" runat="server" GroupName="RegRole" Text="PARTICIPANT" />
                                 </div>
 
-                                <label class="field-label">FULL NAME *</label>
+                                <label class="field-label">FULL NAME</label>
                                 <asp:TextBox ID="txtRegName" runat="server" CssClass="reg-input-full"></asp:TextBox>
 
                                 <div class="reg-input-row">
                                     <div class="input-half">
-                                        <label class="field-label">EMAIL *</label>
+                                        <label class="field-label">EMAIL</label>
                                         <asp:TextBox ID="txtRegEmail" runat="server" CssClass="reg-input-full"></asp:TextBox>
                                     </div>
                                     <div class="input-half">
-                                        <label class="field-label">CONTACT NUMBER *</label>
+                                        <label class="field-label">CONTACT NUMBER</label>
                                         <asp:TextBox ID="txtRegPhone" runat="server" CssClass="reg-input-full"></asp:TextBox>
                                     </div>
                                 </div>
@@ -155,25 +157,24 @@
                     <div class="details-container-box">
                         <div class="details-header-yellow">
                             <div class="category-tag">COMMUNITY ENGAGEMENT</div>
-                            <div class="engagement-title">TITLE OF COMMUNITY ENGAGEMENT</div>
+                            <div class="engagement-title"><asp:Label ID="lblDetEventTitleHeader" runat="server" /></div>
                         </div>
             
                         <div class="details-body-white">
                             <h3 class="details-section-title">EVENT DETAILS</h3>
                             <div class="details-grid">
-                                <p><strong>TITLE:</strong> Event Title</p>
-                                <p><strong>ORGANIZER NAME:</strong> Juan dela Cruz</p>
-                                <p><strong>ADDRESS:</strong> Pulo, Diezmo Road</p>
-                                <p><strong>VENUE:</strong> Brgy. Hall</p>
-                                <p><strong>EMAIL:</strong> email@gmail.com</p>
-                                <p><strong>CONTACT NUMBER:</strong> +63***********</p>
-                                <p><strong>DATE:</strong> January 31, 2026</p>
-                                <p><strong>START TIME:</strong> 7:00AM</p>
-                                <p><strong>END TIME:</strong> 12:00PM</p>
-                                <p><strong>MAX VOLUNTEERS:</strong> 50</p>
+                                <p><strong>TITLE:</strong> <asp:Label ID="lblDetTitle" runat="server" /></p>
+                                <p><strong>ORGANIZER NAME:</strong> <asp:Label ID="lblDetOrganizer" runat="server" /></p>
+                                <p><strong>ADDRESS:</strong> <asp:Label ID="lblDetAddress" runat="server" /></p>
+                                <p><strong>VENUE:</strong> <asp:Label ID="lblDetVenue" runat="server" /></p>
+                                <p><strong>EMAIL:</strong> <asp:Label ID="lblDetEmail" runat="server" /></p>
+                                <p><strong>CONTACT NUMBER:</strong> <asp:Label ID="lblDetContact" runat="server" /></p>
+                                <p><strong>DATE:</strong> <asp:Label ID="lblDetDate" runat="server" /></p>
+                                <p><strong>START TIME:</strong> <asp:Label ID="lblDetStart" runat="server" /></p>
+                                <p><strong>END TIME:</strong> <asp:Label ID="lblDetEnd" runat="server" /></p>
+                                <p><strong>MAX VOLUNTEERS:</strong> <asp:Label ID="lblDetMax" runat="server" /></p>
                                 <p class="announcement-row">
-                                    <strong>ANNOUNCEMENT:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-                                    eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                    <strong>ANNOUNCEMENT:</strong> <asp:Label ID="lblDetAnnouncement" runat="server" />
                                 </p>
                             </div>
                         </div>

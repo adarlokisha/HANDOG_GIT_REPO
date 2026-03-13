@@ -47,36 +47,25 @@ namespace Handog.web
 
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                // We only need the Account table based on your CREATE TABLE script
-                string query = @"
-            SELECT Account_ID, AccRole, Email 
-            FROM Account 
-            WHERE Email = @email AND AccPassword = @pass";
+                // Use the exact column names from your screenshot: Account_ID, AccRole, Email
+                string query = "SELECT Account_ID, AccRole, Email FROM Account WHERE Email = @email AND AccPassword = @pass";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@email", email.Trim());
+                    cmd.Parameters.AddWithValue("@email", email);
                     cmd.Parameters.AddWithValue("@pass", password);
 
-                    try
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        conn.Open();
-                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        if (reader.Read())
                         {
-                            if (reader.Read())
-                            {
-                                isValid = true;
-                                // Match these strings exactly to your column names in the CREATE TABLE script
-                                Session["AccountID"] = reader["Account_ID"].ToString();
-                                Session["UserRole"] = reader["AccRole"].ToString();
-                                Session["UserEmail"] = reader["Email"].ToString();
-                            }
+                            isValid = true;
+                            // This is the part that fixes your NullReferenceException!
+                            Session["AccountID"] = reader["Account_ID"].ToString();
+                            Session["UserRole"] = reader["AccRole"].ToString();
+                            Session["UserEmail"] = reader["Email"].ToString();
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        string errorMsg = ex.Message.Replace("'", "");
-                        ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Error: {errorMsg}');", true);
                     }
                 }
             }
