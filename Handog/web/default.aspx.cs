@@ -31,9 +31,9 @@ namespace Handog.web
                 Session["AccountID"] = GetAccountID(email);
 
                 if (role == "Organizer")
-                    Response.Redirect("orghome.aspx");
+                    Response.Redirect("~/org/home.aspx");
                 else
-                    Response.Redirect("home.aspx");
+                    Response.Redirect("~/web/home.aspx");
             }
             else
             {
