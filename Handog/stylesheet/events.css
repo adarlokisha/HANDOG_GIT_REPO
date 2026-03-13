@@ -233,3 +233,528 @@ body {
     .btn-action:hover {
         opacity: 0.9;
     }
+
+    /* Registration Modal Specifics */
+.registration-card {
+    background: white;
+    width: 90%;
+    max-width: 900px;
+    padding: 40px;
+    border-radius: 5px;
+}
+
+.reg-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.reg-title { font-size: 28px; font-weight: 900; margin: 0; }
+.reg-subtitle { font-size: 12px; color: #888; font-weight: bold; }
+.reg-divider { border: 0; border-top: 1px solid #ccc; margin: 15px 0 30px 0; }
+.reg-bell { height: 25px; }
+
+/* Split Layout */
+.reg-content-split {
+    display: flex;
+    gap: 40px;
+}
+
+.reg-details-side { flex: 1; }
+.reg-form-side { flex: 1.2; }
+
+.section-underline-title {
+    font-size: 22px;
+    text-decoration: underline;
+    color: #666;
+    margin-bottom: 20px;
+    font-weight: 900;
+}
+
+.details-list p { font-size: 13px; margin-bottom: 6px; }
+
+/* The Floating White Box */
+.floating-reg-box {
+    background: #ffffff;
+    border-radius: 25px;
+    padding: 25px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* Soft floating shadow */
+}
+
+.field-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    color: #bbb;
+    margin-top: 15px;
+}
+
+.reg-input-full {
+    width: 100%;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.reg-input-row { display: flex; gap: 10px; }
+.input-half { flex: 1; }
+
+.reg-radio-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 5px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #888;
+}
+
+/* Aligning the button inside the radio group as per image */
+.reg-float-btn {
+    margin-left: auto;
+    padding: 8px 20px !important;
+    font-size: 12px !important;
+    border-radius: 12px !important;
+}
+
+/* ==========================================================================
+    NOTIFICATION MODAL
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Remove 'display: flex' from here */
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+.notification-card {
+    background-color: #ffffff;
+    width: 320px;
+    min-height: 500px;
+    border-radius: 12px;
+    padding: 30px 20px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    z-index: 100000 !important;
+}
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.modal-bell-icon {
+    height: 20px;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.modal-title {
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+/* Items */
+.notification-list {
+    flex-grow: 1;
+}
+
+.notif-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #333;
+}
+
+    .notif-item.success {
+        color: #2ecc71; /* Green text for accepted notifications */
+    }
+
+.info-icon {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Footer & Close */
+.modal-footer {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.modal-close {
+    color: #c0392b;
+    text-decoration: underline;
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.close-arrow {
+    background-color: #c0392b;
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 12px;
+}
+/* MODAL SHARED HEADER */
+.modal-header-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.back-icon-img {
+    height: 35px;
+    width: 35px;
+}
+
+.modal-main-title {
+    font-weight: 900;
+    font-size: 28px;
+}
+
+.sub-title {
+    font-size: 12px;
+    color: #888;
+    margin-top: -5px;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 15px 0;
+}
+
+/* REGISTRATION CARD */
+.registration-card {
+    background: white;
+    width: 90%;
+    max-width: 900px;
+    padding: 30px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.registration-content {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 30px;
+}
+
+.event-details-text p {
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+/* Registration Modal Specifics */
+.registration-card {
+    background: white;
+    width: 90%;
+    max-width: 900px;
+    padding: 40px;
+    border-radius: 5px;
+}
+
+.reg-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.reg-title {
+    font-size: 28px;
+    font-weight: 900;
+    margin: 0;
+}
+
+.reg-subtitle {
+    font-size: 12px;
+    color: #888;
+    font-weight: bold;
+}
+
+.reg-divider {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 15px 0 30px 0;
+}
+
+.reg-bell {
+    height: 25px;
+}
+
+/* Split Layout */
+.reg-content-split {
+    display: flex;
+    gap: 40px;
+}
+
+.reg-details-side {
+    flex: 1;
+}
+
+.reg-form-side {
+    flex: 1.2;
+}
+
+.section-underline-title {
+    font-size: 22px;
+    text-decoration: underline;
+    color: #666;
+    margin-bottom: 20px;
+    font-weight: 900;
+}
+
+.details-list p {
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+/* The Floating White Box */
+.floating-reg-box {
+    background: #ffffff;
+    border-radius: 25px;
+    padding: 25px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* Soft floating shadow */
+}
+
+.field-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    color: #bbb;
+    margin-top: 15px;
+}
+
+.reg-input-full {
+    width: 100%;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.reg-input-row {
+    display: flex;
+    gap: 10px;
+}
+
+.input-half {
+    flex: 1;
+}
+
+.reg-radio-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 5px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #888;
+}
+
+/* Aligning the button inside the radio group as per image */
+.reg-float-btn {
+    margin-left: auto;
+    padding: 8px 20px !important;
+    font-size: 12px !important;
+    border-radius: 12px !important;
+}
+/* FORM BOX */
+.registration-form-box {
+    background: #fdfdfd;
+    border: 1px solid #f0f0f0;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+    .registration-form-box label {
+        font-size: 11px;
+        font-weight: bold;
+        color: #666;
+        display: block;
+        margin-top: 10px;
+    }
+
+.form-input {
+    width: 100%;
+    border: none;
+    background: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+}
+
+.radio-group {
+    display: flex;
+    gap: 15px;
+    margin: 5px 0;
+    font-size: 12px;
+}
+
+/* VIEW DETAILS SPECIFIC */
+.details-card {
+    background: white;
+    width: 85%;
+    max-width: 1000px;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.details-header-yellow {
+    display: flex;
+    border: 1px solid #333;
+    margin-top: 20px;
+}
+
+.category-tag {
+    background: #fbc14b;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-right: 1px solid #333;
+}
+
+.engagement-title {
+    padding: 10px;
+    flex: 1;
+}
+
+.details-body {
+    border: 1px solid #333;
+    border-top: none;
+    padding: 30px;
+}
+/* Container for the Pop-up */
+.details-card {
+    background: white;
+    width: 90%;
+    max-width: 950px;
+    padding: 40px;
+    border-radius: 4px; /* Matches the slightly sharp corners in image */
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+}
+
+/* Back Button Styling */
+.back-circle {
+    width: 35px;
+    height: 35px;
+    background-color: #ccc; /* Grey circle */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.modal-main-title {
+    font-size: 32px;
+    font-weight: 900;
+    margin-left: 10px;
+}
+
+/* The Main Event Box */
+.details-container-box {
+    margin-top: 20px;
+    border: 1px solid #999;
+}
+
+/* Yellow Header Strip */
+.details-header-yellow {
+    display: flex;
+    border-bottom: 1px solid #999;
+    align-items: stretch;
+}
+
+.category-tag {
+    background-color: #fbc14b; /* Gold/Yellow from image */
+    padding: 12px 25px;
+    font-weight: 900;
+    font-size: 14px;
+    border-right: 1px solid #999;
+    text-transform: uppercase;
+}
+
+.engagement-title {
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+}
+
+/* White Content Area */
+.details-body-white {
+    padding: 30px 40px;
+    background: #fff;
+}
+
+.details-section-title {
+    font-size: 22px;
+    font-weight: 900;
+    text-decoration: underline;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+/* Text Formatting */
+.details-grid p {
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: #000;
+}
+
+.details-grid strong {
+    font-weight: 900;
+    margin-right: 5px;
+}
+
+.announcement-row {
+    margin-top: 15px;
+    line-height: 1.6;
+}
