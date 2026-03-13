@@ -37,6 +37,23 @@ namespace Handog.web
             }
         }
 
+        private bool IsValidUser(string email, string password)
+        {
+            bool isValid = false;
+            string connString = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                // We only need the Account table based on your CREATE TABLE script
+                string query = @"
+            SELECT Account_ID, AccRole, Email 
+            FROM Account 
+            WHERE Email = @email AND AccPassword = @pass";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@email", email.Trim());
+                    cmd.Parameters.AddWithValue("@pass", password);
         private string GetUserRole(string email, string password)
         {
             string role = null;
