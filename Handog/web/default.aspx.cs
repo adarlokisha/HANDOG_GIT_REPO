@@ -43,23 +43,20 @@ namespace Handog.web
         private bool IsValidUser(string email, string password)
         {
             bool isValid = false;
-            // Get connection string from Web.config
             string connString = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
 
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                // Joining Person -> Registration -> Account
+                // We only need the Account table based on your CREATE TABLE script
                 string query = @"
-            SELECT A.account_ID, A.Role, P.Email 
-            FROM Account A
-            INNER JOIN Registration R ON A.registration_ID = R.Registration_ID
-            INNER JOIN Person P ON R.Person_ID = P.Person_ID
-            WHERE P.Email = @email AND A.Password = @pass";
+            SELECT Account_ID, AccRole, Email 
+            FROM Account 
+            WHERE Email = @email AND AccPassword = @pass";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@email", email.Trim());
-                    cmd.Parameters.AddWithValue("@pass", password); // In production, use hashing!
+                    cmd.Parameters.AddWithValue("@pass", password);
 
                     try
                     {
@@ -69,16 +66,15 @@ namespace Handog.web
                             if (reader.Read())
                             {
                                 isValid = true;
-                                // Store details in Session to use on the Home page
-                                Session["AccountID"] = reader["account_ID"].ToString();
-                                Session["UserRole"] = reader["Role"].ToString();
+                                // Match these strings exactly to your column names in the CREATE TABLE script
+                                Session["AccountID"] = reader["Account_ID"].ToString();
+                                Session["UserRole"] = reader["AccRole"].ToString();
                                 Session["UserEmail"] = reader["Email"].ToString();
                             }
                         }
                     }
                     catch (Exception ex)
                     {
-                        // This helps you see if there's a specific Azure/SQL error
                         string errorMsg = ex.Message.Replace("'", "");
                         ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Error: {errorMsg}');", true);
                     }
