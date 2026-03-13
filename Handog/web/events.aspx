@@ -43,7 +43,7 @@
                             <div class="event-info">
                                 <h2 class="event-name"><%# Eval("EventTitle") %></h2>
                                 <ul class="event-details">
-                                    <li><%# Eval("VenueAddress") %></li>
+                                    <li><%# Eval("EventAddress") %></li>
                                     <li><%# Eval("ImplementationDate", "{0:MMMM dd, yyyy}") %></li>
                                     <li><%# Eval("EventStartTime", "{0:t}") %> - <%# Eval("EventEndTime", "{0:t}") %></li>
                                 </ul>

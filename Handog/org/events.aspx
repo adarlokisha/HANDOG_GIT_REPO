@@ -61,7 +61,7 @@
                     <asp:Button ID="btnOpenCreateModal" runat="server" Text="+ ORGANIZE EVENT" OnClick="btnOpenCreateModal_Click" CssClass="btn-primary" />
                 </div>
             </asp:Panel>
-
+             
             <asp:Panel ID="pnlManageEvent" runat="server" Visible="false">
                 
                 <div class="manage-header">
@@ -81,23 +81,37 @@
                 </div>
 
                 <asp:Panel ID="pnlEventDetailsTab" runat="server" Visible="true">
-                    <h2 class="section-heading">EVENT DETAILS</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2 class="section-heading">EVENT DETAILS</h2>
+                        <asp:LinkButton ID="btnEditAll" runat="server" OnClick="btnEdit_Click" CssClass="edit-link" style="font-weight: 900;">[ EDIT ALL DETAILS ]</asp:LinkButton>
+                    </div>
+
                     <div class="details-grid">
-                        <div class="detail-row"><asp:LinkButton ID="editTitle" runat="server" CssClass="edit-link">EDIT</asp:LinkButton> <span class="detail-label">TITLE:</span> <asp:Label ID="lblTitle" runat="server" Text="Event Title"></asp:Label></div>
-                        <div class="detail-row"><asp:LinkButton ID="editOrg" runat="server" CssClass="edit-link">EDIT</asp:LinkButton> <span class="detail-label">ORGANIZER NAME:</span> <asp:Label ID="lblOrg" runat="server" Text="Juan dela Cruz"></asp:Label></div>
-                        <div class="detail-row"><asp:LinkButton ID="editAddress" runat="server" CssClass="edit-link">EDIT</asp:LinkButton> <span class="detail-label">ADDRESS:</span> <asp:Label ID="lblAddress" runat="server" Text="Brgy. Hall"></asp:Label></div>
+                        <div class="detail-row"><span class="detail-label">TITLE:</span> <asp:Label ID="lblTitle" runat="server" /></div>
+                        <div class="detail-row"><span class="detail-label">ORGANIZER NAME:</span> <asp:Label ID="lblOrg" runat="server" /></div>
+                        <div class="detail-row"><span class="detail-label">VENUE ADDRESS:</span> <asp:Label ID="lblAddress" runat="server" /></div>
+                        <div class="detail-row"><span class="detail-label">VENUE NAME:</span> <asp:Label ID="lblVenue" runat="server" /></div>
+                        <div class="detail-row"><span class="detail-label">EMAIL:</span> <asp:Label ID="lblEmail" runat="server" /></div>
+                        <div class="detail-row"><span class="detail-label">CONTACT NUMBER:</span> <asp:Label ID="lblContact" runat="server" /></div>
+                        <div class="detail-row"><span class="detail-label">DATE:</span> <asp:Label ID="lblDate" runat="server" /></div>
+                        <div class="detail-row"><span class="detail-label">START TIME:</span> <asp:Label ID="lblStart" runat="server" /></div>
+                        <div class="detail-row"><span class="detail-label">END TIME:</span> <asp:Label ID="lblEnd" runat="server" /></div>
+                        <div class="detail-row"><span class="detail-label">MAX VOLUNTEERS:</span> <asp:Label ID="lblMax" runat="server" /></div>
+                        <div class="detail-row"><span class="detail-label">ANNOUNCEMENT:</span> <asp:Label ID="lblAnnouncement" runat="server" /></div>
                     </div>
 
                     <h2 class="section-heading">REGISTERED VOLUNTEERS</h2>
-                    <asp:GridView ID="gvVolunteers" runat="server" AutoGenerateColumns="False" CssClass="volunteers-grid">
-                        <Columns>
-                            <asp:BoundField DataField="ID" HeaderText="ID" />
-                            <asp:BoundField DataField="Name" HeaderText="NAME" />
-                            <asp:BoundField DataField="Email" HeaderText="EMAIL" />
-                            <asp:BoundField DataField="Contact" HeaderText="CONTACTNUM" />
-                        </Columns>
-                    </asp:GridView>
-                    <h3 class="expected-participants">EXPECTED NUMBER OF PARTICIPANTS: 50</h3>
+                    <div class="table-container" style="border: 1px solid #333; margin-top: 10px;">
+                        <asp:GridView ID="gvVolunteers" runat="server" AutoGenerateColumns="False" CssClass="volunteers-grid" GridLines="Horizontal">
+                            <Columns>
+                                <asp:BoundField DataField="ID" HeaderText="ID" ItemStyle-Width="100px" />
+                                <asp:BoundField DataField="Name" HeaderText="NAME" ItemStyle-Width="250px" />
+                                <asp:BoundField DataField="Email" HeaderText="EMAIL" ItemStyle-Width="250px" />
+                                <asp:BoundField DataField="Contact" HeaderText="CONTACTNUM" />
+                            </Columns>
+                        </asp:GridView>
+                    </div>
+                    <h3 class="expected-participants" style="margin-top: 20px;">EXPECTED NUMBER OF PARTICIPANTS: <asp:Label ID="lblExpectedPart" runat="server" Text="50" /></h3>
                 </asp:Panel>
 
                 <asp:Panel ID="pnlVolunteerSignupsTab" runat="server" Visible="false">
@@ -130,6 +144,63 @@
 
             </asp:Panel>
         </main>
+
+        <asp:HiddenField ID="hfEditingEventID" runat="server" />
+
+        <asp:Panel ID="pnlEditEvent" runat="server" CssClass="modal-overlay" Visible="false">
+            <div class="create-card" style="max-width: 700px; max-height: 90vh; overflow-y: auto;">
+                <h2 class="create-title">EDIT EVENT DETAILS</h2>
+                <hr class="create-divider" />
+        
+                <div class="form-row">
+                    <span class="form-label">EVENT TITLE</span>
+                    <asp:TextBox ID="txtEditTitle" runat="server" CssClass="form-input"></asp:TextBox>
+                </div>
+
+                <div class="form-row-split">
+                    <div class="form-half">
+                        <span class="form-label">VENUE NAME</span>
+                        <asp:TextBox ID="txtEditVenueName" runat="server" CssClass="form-input"></asp:TextBox>
+                    </div>
+                    <div class="form-half">
+                        <span class="form-label">VENUE ADDRESS</span>
+                        <asp:TextBox ID="txtEditAddress" runat="server" CssClass="form-input"></asp:TextBox>
+                    </div>
+                </div>
+
+                <div class="form-row-split">
+                    <div class="form-half">
+                        <span class="form-label">IMPLEMENTATION DATE</span>
+                        <asp:TextBox ID="txtEditDate" runat="server" TextMode="Date" CssClass="form-input"></asp:TextBox>
+                    </div>
+                    <div class="form-half">
+                        <span class="form-label">MAX VOLUNTEERS</span>
+                        <asp:TextBox ID="txtEditMax" runat="server" CssClass="form-input" TextMode="Number"></asp:TextBox>
+                    </div>
+                </div>
+
+                <div class="form-row-split">
+                    <div class="form-half">
+                        <span class="form-label">START TIME</span>
+                        <asp:TextBox ID="txtEditStart" runat="server" TextMode="Time" CssClass="form-input"></asp:TextBox>
+                    </div>
+                    <div class="form-half">
+                        <span class="form-label">END TIME</span>
+                        <asp:TextBox ID="txtEditEnd" runat="server" TextMode="Time" CssClass="form-input"></asp:TextBox>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <span class="form-label">GENERAL ANNOUNCEMENT</span>
+                    <asp:TextBox ID="txtEditAnnounce" runat="server" TextMode="MultiLine" Rows="4" CssClass="form-input"></asp:TextBox>
+                </div>
+
+                <div class="modal-footer-split">
+                    <asp:LinkButton ID="btnCancelEdit" runat="server" OnClick="btnCloseEdit_Click" CssClass="btn-circle-grey" style="text-decoration:none;">CAN</asp:LinkButton>
+                    <asp:Button ID="btnSaveEdit" runat="server" Text="SAVE CHANGES" OnClick="btnSaveEdit_Click" CssClass="btn-primary" />
+                </div>
+            </div>
+        </asp:Panel>
 
         <asp:Panel ID="pnlCreateEventModal" runat="server" CssClass="modal-overlay" Visible="false">
             <div class="create-card">

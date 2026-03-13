@@ -24,7 +24,7 @@ namespace Handog.web
             string connString = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                string query = "SELECT PublishedEventNum, EventTitle, VenueAddress, ImplementationDate, EventStartTime, EventEndTime, Announcement FROM PublishedEvent";
+                string query = "SELECT PublishedEventNum, EventTitle, EventAddress, Venue, ImplementationDate, EventStartTime, EventEndTime, Announcement FROM PublishedEvent";
                 SqlDataAdapter da = new SqlDataAdapter(query, conn);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -173,7 +173,8 @@ namespace Handog.web
                     {
                         string title = reader["EventTitle"].ToString();
                         string organizer = reader["OrganizerName"].ToString();
-                        string address = reader["VenueAddress"].ToString();
+                        string address = reader["EventAddress"].ToString();
+                        string venue = reader["Venue"].ToString();
                         string email = reader["OrgEmail"].ToString();
                         string contact = reader["OrgPhone"].ToString();
                         string date = Convert.ToDateTime(reader["ImplementationDate"]).ToString("MMMM dd, yyyy");
@@ -199,7 +200,7 @@ namespace Handog.web
                         lblDetTitle.Text = title;
                         lblDetOrganizer.Text = organizer;
                         lblDetAddress.Text = address;
-                        lblDetVenue.Text = address; // Using address as venue per your SQL results
+                        lblDetVenue.Text = venue; // Using address as venue per your SQL results
                         lblDetEmail.Text = email;
                         lblDetContact.Text = contact;
                         lblDetDate.Text = date;
