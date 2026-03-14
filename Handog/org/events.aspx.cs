@@ -32,13 +32,14 @@ namespace Handog.org
         {
             using (SqlConnection conn = new SqlConnection(connString))
             {
+                // Explicitly selecting Venue and EventAddress to match your Repeater Evals
                 string query = @"
-                    SELECT PublishedEventNum as EventID, EventTitle, EventAddress, Venue,
-                           ImplementationDate as EventDate,
-                           (FORMAT(EventStartTime, 'hh:mm tt') + ' - ' + FORMAT(EventEndTime, 'hh:mm tt')) as TimeStr,
-                           Announcement as Description
-                    FROM PublishedEvent
-                    WHERE AccountNum = (SELECT AccountNum FROM Account WHERE Account_ID = @accID)";
+            SELECT PublishedEventNum as EventID, EventTitle, EventAddress, Venue,
+                   ImplementationDate as EventDate,
+                   (FORMAT(EventStartTime, 'hh:mm tt') + ' - ' + FORMAT(EventEndTime, 'hh:mm tt')) as TimeStr,
+                   Announcement as Description
+            FROM PublishedEvent
+            WHERE AccountNum = (SELECT AccountNum FROM Account WHERE Account_ID = @accID)";
 
                 SqlDataAdapter da = new SqlDataAdapter(query, conn);
                 da.SelectCommand.Parameters.AddWithValue("@accID", Session["AccountID"]);
@@ -48,7 +49,6 @@ namespace Handog.org
                 rptEvents.DataBind();
             }
         }
-
         protected void rptEvents_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "ViewDetails")
@@ -102,13 +102,15 @@ namespace Handog.org
         {
             using (SqlConnection conn = new SqlConnection(connString))
             {
+                // Mapping Venue and EventAddress while also getting the participant count
                 string query = @"
-                    SELECT E.*, Venue, EventAddress,
-                           (A.Firstname + ' ' + A.Lastname) as OrganizerName,
-                           A.Email as OrgEmail, A.ContactNum as OrgPhone
-                    FROM PublishedEvent E
-                    INNER JOIN Account A ON E.AccountNum = A.AccountNum
-                    WHERE PublishedEventNum = @id";
+            SELECT E.*, 
+                   (A.Firstname + ' ' + A.Lastname) as OrganizerName,
+                   A.Email as OrgEmail, A.ContactNum as OrgPhone,
+                   (SELECT COUNT(*) FROM EventVolunteers WHERE PublishedEventNum = @id AND Is_Accepted = 1) as AcceptedCount
+            FROM PublishedEvent E
+            INNER JOIN Account A ON E.AccountNum = A.AccountNum
+            WHERE PublishedEventNum = @id";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@id", eventID);
@@ -121,8 +123,11 @@ namespace Handog.org
                         lblTopTitle.Text = reader["EventTitle"].ToString().ToUpper();
                         lblTitle.Text = reader["EventTitle"].ToString();
                         lblOrg.Text = reader["OrganizerName"].ToString();
+
+                        // Connection points for your request:
                         lblVenue.Text = reader["Venue"].ToString();
                         lblAddress.Text = reader["EventAddress"].ToString();
+
                         lblEmail.Text = reader["OrgEmail"].ToString();
                         lblContact.Text = reader["OrgPhone"].ToString();
                         lblDate.Text = Convert.ToDateTime(reader["ImplementationDate"]).ToString("MMMM dd, yyyy");
@@ -130,10 +135,12 @@ namespace Handog.org
                         lblEnd.Text = Convert.ToDateTime(reader["EventEndTime"]).ToString("t");
                         lblMax.Text = reader["VolunteerCapacity"].ToString();
                         lblAnnouncement.Text = reader["Announcement"].ToString();
+
+                        // Dynamic Participant Count
+                        lblExpectedPart.Text = reader["AcceptedCount"].ToString();
                     }
                 }
             }
-
             LoadVolunteerGrid(eventID);
         }
 

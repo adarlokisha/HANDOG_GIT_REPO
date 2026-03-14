@@ -135,7 +135,7 @@
                                     <asp:RadioButton ID="rbAgreeYes" runat="server" GroupName="Consent" Text="YES" />
                                     <asp:RadioButton ID="rbAgreeNo" runat="server" GroupName="Consent" Text="NO" />
                         
-                                    <asp:Button ID="btnConfirmReg" runat="server" Text="+ REGISTER" CssClass="btn-action reg-float-btn" />
+                                    <asp:Button ID="btnConfirmReg" runat="server" Text="+ REGISTER" CssClass="btn-action reg-float-btn" OnClick="btnConfirmReg_Click" />
                                 </div>
                             </div>
                         </div>
