@@ -206,7 +206,7 @@ namespace Handog.web
                         lblRegVenue.Text = venue; 
                         lblRegEmail.Text = email;
                         lblRegContact.Text = contact;
-                        lblRegDate.Text = date;
+                        lblRegDate.Text = date;                            
                         lblRegStart.Text = start;
                         lblRegEnd.Text = end;
                         lblRegMax.Text = capacity;

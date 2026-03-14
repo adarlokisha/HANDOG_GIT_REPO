@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Data.SqlClient; 
+using System.Configuration;
 
 namespace Handog.web
 {
@@ -11,7 +14,77 @@ namespace Handog.web
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                BindRequestTypes();
+                BindRequests();
+            }
+        }
+        private void BindRequestTypes()
+        {
+            // Replace with your actual connection string
+            string connStr = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "SELECT RequestTypeNum, Type_of_Request FROM RequestType";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                conn.Open();
+                ddlRequestType.DataSource = cmd.ExecuteReader();
+                ddlRequestType.DataTextField = "Type_of_Request";
+                ddlRequestType.DataValueField = "RequestTypeNum";
+                ddlRequestType.DataBind();
 
+                ddlRequestType.Items.Insert(0, new ListItem("-- Select Purpose --", "0"));
+            }
+        }
+        private void BindRequests()
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                // Joining tables to get the name and the type description
+                string query = @"SELECT r.RequestDetails, 
+                               rt.Type_of_Request, 
+                               (a.FirstName + ' ' + a.LastName) as AccountName 
+                         FROM Request r
+                         INNER JOIN RequestType rt ON r.RequestTypeNum = rt.RequestTypeNum
+                         INNER JOIN Account a ON r.AccountNum = a.AccountNum
+                         ORDER BY r.RequestNum DESC";
+
+                SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                rptRequests.DataSource = dt;
+                rptRequests.DataBind();
+            }
+        }
+        protected void btnPostRequest_Click(object sender, EventArgs e)
+        {
+            // 1. Safety Check: If session is null, the user isn't logged in properly
+            if (Session["UserAccountNum"] == null)
+            {
+                // Redirect to login or show an error
+                Response.Redirect("default.aspx");
+                return;
+            }
+
+            string connStr = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "INSERT INTO Request (AccountNum, RequestTypeNum, RequestDetails, Is_Accepted) VALUES (@Acc, @Type, @Details, 0)";
+                SqlCommand cmd = new SqlCommand(query, conn);
+
+                // Now @Acc will definitely have a value
+                cmd.Parameters.AddWithValue("@Acc", Session["UserAccountNum"]);
+                cmd.Parameters.AddWithValue("@Type", ddlRequestType.SelectedValue);
+                cmd.Parameters.AddWithValue("@Details", txtDetails.Text);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+
+            pnlAddRequest.Visible = false;
+            BindRequests();
         }
         protected void btnLogout_Click(object sender, EventArgs e)
         {
@@ -30,30 +103,16 @@ namespace Handog.web
         }
         protected void btnAddRequest_Click(object sender, EventArgs e)
         {
+            txtDetails.Text = "";
+            if (ddlRequestType.Items.Count > 0) ddlRequestType.SelectedIndex = 0;
+
+            // Show the modal
             pnlAddRequest.Visible = true;
         }
 
         protected void btnCancelRequest_Click(object sender, EventArgs e)
         {
             pnlAddRequest.Visible = false;
-            rblRequestType.ClearSelection();
-            phFormFields.Visible = false;
-        }
-        protected void rblRequestType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            phFormFields.Visible = true;
-            if (rblRequestType.SelectedValue == "Inquiry")
-            {
-                lblSubject.Text = "INQUIRY SUBJECT*";
-                lblDetails.Text = "INQUIRY DETAILS*";
-                btnPostRequest.Text = "+ POST INQUIRY";
-            }
-            else
-            {
-                lblSubject.Text = "REQUEST NATURE*";
-                lblDetails.Text = "REQUEST DETAILS*";
-                btnPostRequest.Text = "+ POST ASSISTANCE";
-            }
         }
         protected void btnCloseModals_Click(object sender, EventArgs e)
         {

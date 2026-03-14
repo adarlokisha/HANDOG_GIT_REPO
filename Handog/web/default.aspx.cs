@@ -28,7 +28,10 @@ namespace Handog.web
             {
                 Session["UserEmail"] = email;
                 Session["UserRole"] = role;
-                Session["AccountID"] = GetAccountID(email);
+
+                // Retrieve the ID and store it in the session variable 
+                // that your request page expects: "UserAccountNum"
+                Session["UserAccountNum"] = GetAccountID(email);
 
                 if (role == "Organizer")
                     Response.Redirect("~/org/home.aspx");
@@ -76,17 +79,16 @@ namespace Handog.web
         private string GetAccountID(string email)
         {
             string accountID = null;
-
             try
             {
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
-                    string query = "SELECT Account_ID FROM [Account] WHERE Email=@Email";
+                    // Change 'Account_ID' to 'AccountNum' if that is your actual column name
+                    string query = "SELECT AccountNum FROM [Account] WHERE Email=@Email";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@Email", email);
-
                         conn.Open();
                         object result = cmd.ExecuteScalar();
 
@@ -97,10 +99,8 @@ namespace Handog.web
             }
             catch (Exception ex)
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "alert",
-                    $"alert('Error: {ex.Message.Replace("'", "")}');", true);
+                // Error handling
             }
-
             return accountID;
         }
 

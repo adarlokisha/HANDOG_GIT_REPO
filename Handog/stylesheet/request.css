@@ -203,16 +203,16 @@ body {
 
 /* NOTIFICATION */
 .modal-overlay {
-    position: fixed !important;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100vw !important;
-    height: 100vh !important;
-    background-color: rgba(0, 0, 0, 0.6) !important;
-    display: flex !important; /* Forces the flex alignment when visible */
-    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Dimmed background */
+    display: flex;
     align-items: center;
-    z-index: 99999 !important; /* Must be higher than the header */
+    justify-content: center;
+    z-index: 1000;
 }
 
 .notification-card {
@@ -301,14 +301,13 @@ body {
 
 /* REQUEST MODAL SPECIFIC */
 .request-modal-card {
-    background-color: #ffffff;
-    width: 95%;
-    max-width: 800px;
-    border-radius: 40px;
-    padding: 40px;
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+    background: #fff;
+    padding: 50px 40px; /* Increased padding to give the form room */
+    border-radius: 40px; /* Matching the very rounded corners in your image */
+    width: 90%;
+    max-width: 700px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     position: relative;
-    border: 1px solid #ddd;
 }
 
 .modal-close-header {
@@ -333,10 +332,10 @@ body {
 }
 
 .custom-radio-list label {
-    margin-right: 20px;
+    margin-right: 40px;
     font-size: 12px;
     color: #aaa;
-    margin-left: 5px;
+    margin-left: 90px;
 }
 
 .form-label {
@@ -350,10 +349,14 @@ body {
 
 .form-input, .form-textarea {
     width: 100%;
-    background-color: #f5f5f5;
-    border: none;
-    border-radius: 8px;
-    padding: 12px;
+    padding: 12px 15px;
+    padding-right: 35px; /* Pushes the dropdown arrow away from the edge */
+    border: 1px solid #eee;
+    border-radius: 12px;
+    background-color: #f6f6f6;
+    box-sizing: border-box;
+    color: #555;
+    outline: none;
 }
 
 .modal-action-container {

@@ -39,58 +39,44 @@
             <hr class="title-divider" />
 
             <div class="cards-scroll-container">
-
-             <div class="request-card">
-                    <p class="requestor-name">NAME OF REQUESTORS</p>
-                    <hr class="card-divider" />
-                    <p class="request-text">
-                        <span class="bold-label">REASON FOR REQUEST:</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </p>
-                </div>
-                <div class="request-card">
-                    <p class="requestor-name">NAME OF REQUESTORS</p>
-                    <hr class="card-divider" />
-                    <p class="request-text">
-                        <span class="bold-label">INQUIRY:</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </p>
-                </div>
-
+                <asp:Repeater ID="rptRequests" runat="server">
+                    <ItemTemplate>
+                        <div class="request-card">
+                            <p class="requestor-name"><%# Eval("AccountName") %></p>
+                            <hr class="card-divider" />
+                            <p class="request-text">
+                                <span class="bold-label"><%# Eval("Type_of_Request").ToString().ToUpper() %>:</span> 
+                                <br />
+                                <%# Eval("RequestDetails") %>
+                            </p>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </div>
             <div class="button-container">
                 <asp:LinkButton ID="btnAddRequestTrigger" runat="server" OnClick="btnAddRequest_Click" CssClass="btn-add">+ ADD REQUEST</asp:LinkButton>
             </div>
         </main>
 
-        <asp:Panel ID="pnlAddRequest" runat="server" CssClass="modal-overlay" Visible="false">
+       <asp:Panel ID="pnlAddRequest" runat="server" CssClass="modal-overlay" Visible="false">
             <div class="request-modal-card">
                 <div class="modal-close-header">
                     <asp:LinkButton ID="btnCancelRequest" runat="server" OnClick="btnCancelRequest_Click" CssClass="close-x">✕</asp:LinkButton>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-question">IS THIS REQUEST AN INQUIRY OR A REQUEST FOR ASSISTANCE?</label>
-                    <div class="radio-group">
-                        <asp:RadioButtonList ID="rblRequestType" runat="server" RepeatDirection="Horizontal" AutoPostBack="true" OnSelectedIndexChanged="rblRequestType_SelectedIndexChanged" CssClass="custom-radio-list">
-                            <asp:ListItem Text="INQUIRY" Value="Inquiry"></asp:ListItem>
-                            <asp:ListItem Text="ASSISTANCE" Value="Assistance"></asp:ListItem>
-                        </asp:RadioButtonList>
-                    </div>
+                    <label class="form-label">PURPOSE OF REQUEST*</label>
+                    <asp:DropDownList ID="ddlRequestType" runat="server" CssClass="form-input"></asp:DropDownList>
                 </div>
 
-                <asp:PlaceHolder ID="phFormFields" runat="server" Visible="false">
-                    <div class="form-group">
-                        <asp:Label ID="lblSubject" runat="server" CssClass="form-label" Text="INQUIRY SUBJECT*"></asp:Label>
-                        <asp:TextBox ID="txtSubject" runat="server" CssClass="form-input"></asp:TextBox>
-                    </div>
+                <div class="form-group">
+                    <label class="form-label">REQUEST DETAILS*</label>
+                    <asp:TextBox ID="txtDetails" runat="server" TextMode="MultiLine" Rows="6" CssClass="form-textarea"></asp:TextBox>
+                </div>
 
-                    <div class="form-group">
-                        <asp:Label ID="lblDetails" runat="server" CssClass="form-label" Text="INQUIRY DETAILS*"></asp:Label>
-                        <asp:TextBox ID="txtDetails" runat="server" TextMode="MultiLine" Rows="6" CssClass="form-textarea"></asp:TextBox>
-                    </div>
-
-                    <div class="modal-action-container">
-                        <asp:Button ID="btnPostRequest" runat="server" Text="+ POST INQUIRY" CssClass="btn-post" />
-                    </div>
-                </asp:PlaceHolder>
+                <div class="modal-action-container">
+                    <asp:Button ID="btnPostRequest" runat="server" Text="+ POST REQUEST" CssClass="btn-post" OnClick="btnPostRequest_Click" />
+                </div>
             </div>
         </asp:Panel>
                
