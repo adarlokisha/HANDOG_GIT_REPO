@@ -77,37 +77,40 @@
             </section>
         </main>
 
-        <asp:Panel ID="pnlNotifications" runat="server" CssClass="modal-overlay" Visible="false">
+        <!-- NOTIFICATION MODAL -->
+        <asp:Panel ID="pnlNotifications" runat="server" CssClass="modal-overlay-notif" Visible="false">
             <div class="notification-card">
-        
+                <!-- Header -->
                 <div class="modal-header">
                     <asp:Image ID="imgYellowBell" runat="server" ImageUrl="~/images/yellow-bell.png" CssClass="modal-bell-icon" />
                     <span class="modal-title">NOTIFICATIONS</span>
                 </div>
 
+                <!-- Notification List -->
                 <div class="notification-list">
                     <div class="notif-item">
-                        <asp:Image ID="imgExclam1" runat="server" ImageUrl="~/images/exclam-icon.png" CssClass="exclam-icon" /> 
+                        <asp:Image ID="imgExclam1" runat="server" ImageUrl="~/images/exclam-icon.png" CssClass="exclam-icon" />
                         <span>New request has been added!</span>
                     </div>
                     <div class="notif-item">
-                        <asp:Image ID="imgExclam2" runat="server" ImageUrl="~/images/exclam-icon.png" CssClass="exclam-icon" /> 
+                        <asp:Image ID="imgExclam2" runat="server" ImageUrl="~/images/exclam-icon.png" CssClass="exclam-icon" />
                         <span>New volunteer registration!</span>
                     </div>
                     <div class="notif-item">
-                        <asp:Image ID="imgExclam3" runat="server" ImageUrl="~/images/exclam-icon.png" CssClass="exclam-icon" /> 
+                        <asp:Image ID="imgExclam3" runat="server" ImageUrl="~/images/exclam-icon.png" CssClass="exclam-icon" />
                         <span>New event has been added!</span>
                     </div>
                 </div>
 
+                <!-- Footer / Close Button -->
                 <div class="modal-footer">
                     <asp:LinkButton ID="btnCloseNotif" runat="server" OnClick="btnCloseNotif_Click" CssClass="modal-close">
                         <asp:Image ID="imgCloseArrow" runat="server" ImageUrl="~/images/red-arrow-icon.png" CssClass="logout-icon" /> CLOSE
                     </asp:LinkButton>
                 </div>
-
             </div>
         </asp:Panel>
+
     </form>
 </body>
 </html>

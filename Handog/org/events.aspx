@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Handog - Organize Events</title>
-    <link href="~/stylesheet/orgevent.css" rel="stylesheet" type="text/css" />
+    <link href="../stylesheet/orgevent.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <form id="form1" runat="server">
@@ -36,26 +36,41 @@
             <asp:Panel ID="pnlMainEvents" runat="server" Visible="true">
                 <h1 class="page-title">MY EVENTS</h1>
 
-                <div class="events-list">
-                    <asp:Repeater ID="rptEvents" runat="server" OnItemCommand="rptEvents_ItemCommand">
-                        <ItemTemplate>
-                            <div class="event-card">
-                                <div class="event-info">
-                                    <h2 class="event-name"><%# Eval("EventTitle") %></h2>
-                                    <ul class="event-details">
-                                        <li><%# Eval("Venue") %></li>
-                                        <li><%# Eval("EventDate") %></li>
-                                        <li><%# Eval("TimeStr") %></li>
-                                    </ul>
-                                    <p class="event-desc"><%# Eval("Description") %></p>
-                                </div>
-                                <div class="event-image">
-                                    <asp:Button ID="btnViewDetails" runat="server" Text="VIEW DETAILS" CommandName="ViewDetails" CommandArgument='<%# Eval("EventID") %>' CssClass="btn-view" />
-                                </div>
+            <div class="events-list">
+                <asp:Repeater ID="rptEvents" runat="server" OnItemCommand="rptEvents_ItemCommand">
+                    <ItemTemplate>
+                        <div class="event-card">
+                            <!-- DELETE BUTTON -->
+                            <asp:LinkButton 
+                                ID="btnDeleteEvent" 
+                                runat="server"
+                                CommandName="DeleteEvent"
+                                CommandArgument='<%# Eval("EventID") %>'
+                                CssClass="event-delete"
+                                OnClientClick="return confirm('Are you sure you want to delete this event?');">X</asp:LinkButton>
+
+                            <div class="event-info">
+                                <h2 class="event-name"><%# Eval("EventTitle") %></h2>
+                                <ul class="event-details">
+                                    <li><%# Eval("Venue") %></li>
+                                    <li><%# Eval("EventDate") %></li>
+                                    <li><%# Eval("TimeStr") %></li>
+                                </ul>
+                                <p class="event-desc"><%# Eval("Description") %></p>
                             </div>
-                        </ItemTemplate>
-                    </asp:Repeater>
-                </div>
+                            <div class="event-image">
+                                <asp:Button 
+                                    ID="btnViewDetails" 
+                                    runat="server" 
+                                    Text="VIEW DETAILS" 
+                                    CommandName="ViewDetails" 
+                                    CommandArgument='<%# Eval("EventID") %>' 
+                                    CssClass="btn-view" />
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </div>
 
                 <div class="center-button">
                     <asp:Button ID="btnOpenCreateModal" runat="server" Text="+ ORGANIZE EVENT" OnClick="btnOpenCreateModal_Click" CssClass="btn-primary" />
@@ -72,13 +87,7 @@
                 <div class="manage-title-box">
                     <div class="box-left">COMMUNITY ENGAGEMENT</div>
                     <div class="box-right"><asp:Label ID="lblTopTitle" runat="server" Text="TITLE OF COMMUNITY ENGAGEMENT"></asp:Label></div>
-                </div>
-
-                <div class="manage-tabs">
-                    <asp:LinkButton ID="btnTabDetails" runat="server" OnClick="btnTabDetails_Click" CssClass="tab-link active">EVENT DETAILS</asp:LinkButton>
-                    <span class="tab-divider">|</span>
-                    <asp:LinkButton ID="btnTabSignups" runat="server" OnClick="btnTabSignups_Click" CssClass="tab-link">VOLUNTEER SIGNUPS <span class="red-dot">•</span></asp:LinkButton>
-                </div>
+                </div> 
 
                 <asp:Panel ID="pnlEventDetailsTab" runat="server" Visible="true">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -107,42 +116,17 @@
                                 <asp:BoundField DataField="ID" HeaderText="ID" ItemStyle-Width="100px" />
                                 <asp:BoundField DataField="Name" HeaderText="NAME" ItemStyle-Width="250px" />
                                 <asp:BoundField DataField="Email" HeaderText="EMAIL" ItemStyle-Width="250px" />
-                                <asp:BoundField DataField="Contact" HeaderText="CONTACTNUM" />
+                                <asp:BoundField DataField="Contact" HeaderText="PHONE" />
+                                <asp:BoundField DataField="VolunteerType" HeaderText="TYPE" />
                             </Columns>
                         </asp:GridView>
                     </div>
-                    <h3 class="expected-participants" style="margin-top: 20px;">EXPECTED NUMBER OF PARTICIPANTS: <asp:Label ID="lblExpectedPart" runat="server" Text="50" /></h3>
-                </asp:Panel>
-
-                <asp:Panel ID="pnlVolunteerSignupsTab" runat="server" Visible="false">
-                    <h2 class="section-heading">VOLUNTEER SIGNUPS</h2>
-                    
-                    <div class="signups-list">
-                        <asp:Repeater ID="rptSignups" runat="server" OnItemCommand="rptSignups_ItemCommand">
-                            <ItemTemplate>
-                                <div class="signup-card">
-                                    <asp:Image ID="imgAvatar" runat="server" ImageUrl="~/images/profile-icon.png" CssClass="signup-avatar" />
-                                    
-                                    <div class="signup-info">
-                                        <h3 class="signup-name"><%# Eval("Name") %></h3>
-                                        <p class="signup-meta">
-                                            <i>Church ID: <%# Eval("ChurchID") %></i> &nbsp;&nbsp; 
-                                            <i><%# Eval("Email") %></i> &nbsp;&nbsp; 
-                                            <i><%# Eval("Phone") %></i>
-                                        </p>
-                                    </div>
-                                    
-                                    <div class="signup-actions">
-                                        <asp:ImageButton ID="btnAccept" runat="server" ImageUrl="~/images/accept-icon.png" CommandName="Accept" CommandArgument='<%# Eval("SignupID") %>' CssClass="action-icon" />
-                                        <asp:ImageButton ID="btnReject" runat="server" ImageUrl="~/images/reject-icon.png" CommandName="Reject" CommandArgument='<%# Eval("SignupID") %>' CssClass="action-icon" />
-                                    </div>
-                                </div>
-                            </ItemTemplate>
-                        </asp:Repeater>
-                    </div>
-                </asp:Panel>
-
-            </asp:Panel>
+                    <h3 class="expected-participants" style="margin-top: 20px;">
+                        EXPECTED NUMBER OF PARTICIPANTS: <asp:Label ID="lblExpectedPart" runat="server" Text="0" />
+                    </h3>
+                    </asp:Panel>
+             </asp:Panel>      
+   
         </main>
 
         <asp:HiddenField ID="hfEditingEventID" runat="server" />
@@ -196,7 +180,7 @@
                 </div>
 
                 <div class="modal-footer-split">
-                    <asp:LinkButton ID="btnCancelEdit" runat="server" OnClick="btnCloseEdit_Click" CssClass="btn-circle-grey" style="text-decoration:none;">CAN</asp:LinkButton>
+                    <asp:LinkButton ID="btnCancelEdit" runat="server" OnClick="btnCloseEdit_Click" CssClass="btn-circle-grey" style="text-decoration:none;">X</asp:LinkButton>
                     <asp:Button ID="btnSaveEdit" runat="server" Text="SAVE CHANGES" OnClick="btnSaveEdit_Click" CssClass="btn-primary" />
                 </div>
             </div>
@@ -246,31 +230,37 @@
             </div>
         </asp:Panel>
 
-        <asp:Panel ID="pnlNotifications" runat="server" CssClass="modal-overlay" Visible="false">
+         <!-- NOTIFICATION MODAL -->
+        <asp:Panel ID="pnlNotifications" runat="server" CssClass="modal-overlay-notif" Visible="false">
             <div class="notification-card">
-                
+                <!-- Header -->
                 <div class="modal-header">
                     <asp:Image ID="imgYellowBell" runat="server" ImageUrl="~/images/yellow-bell.png" CssClass="modal-bell-icon" />
                     <span class="modal-title">NOTIFICATIONS</span>
                 </div>
 
+                <!-- Notification List -->
                 <div class="notification-list">
                     <div class="notif-item">
-                        <asp:Image ID="imgExclam1" runat="server" ImageUrl="~/images/exclam-icon.png" CssClass="exclam-icon" /> 
-                        <span>New volunteer sign-up for Coastal Cleanup!</span>
+                        <asp:Image ID="imgExclam1" runat="server" ImageUrl="~/images/exclam-icon.png" CssClass="exclam-icon" />
+                        <span>New request has been added!</span>
                     </div>
                     <div class="notif-item">
-                        <asp:Image ID="imgExclam2" runat="server" ImageUrl="~/images/exclam-icon.png" CssClass="exclam-icon" /> 
-                        <span>New inquiry regarding Community Engagement.</span>
+                        <asp:Image ID="imgExclam2" runat="server" ImageUrl="~/images/exclam-icon.png" CssClass="exclam-icon" />
+                        <span>New volunteer registration!</span>
+                    </div>
+                    <div class="notif-item">
+                        <asp:Image ID="imgExclam3" runat="server" ImageUrl="~/images/exclam-icon.png" CssClass="exclam-icon" />
+                        <span>New event has been added!</span>
                     </div>
                 </div>
 
-                <div class="modal-footer" style="justify-content: flex-end;">
+                <!-- Footer / Close Button -->
+                <div class="modal-footer">
                     <asp:LinkButton ID="btnCloseNotif" runat="server" OnClick="btnCloseNotif_Click" CssClass="modal-close">
                         <asp:Image ID="imgCloseArrow" runat="server" ImageUrl="~/images/red-arrow-icon.png" CssClass="logout-icon" /> CLOSE
                     </asp:LinkButton>
                 </div>
-
             </div>
         </asp:Panel>
 

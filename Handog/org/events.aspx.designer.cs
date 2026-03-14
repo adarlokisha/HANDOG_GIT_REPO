@@ -132,24 +132,6 @@ namespace Handog.org
         protected global::System.Web.UI.WebControls.Label lblTopTitle;
 
         /// <summary>
-        /// btnTabDetails control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnTabDetails;
-
-        /// <summary>
-        /// btnTabSignups control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnTabSignups;
-
-        /// <summary>
         /// pnlEventDetailsTab control.
         /// </summary>
         /// <remarks>
@@ -283,24 +265,6 @@ namespace Handog.org
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblExpectedPart;
-
-        /// <summary>
-        /// pnlVolunteerSignupsTab control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlVolunteerSignupsTab;
-
-        /// <summary>
-        /// rptSignups control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptSignups;
 
         /// <summary>
         /// hfEditingEventID control.
@@ -616,6 +580,15 @@ namespace Handog.org
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image imgExclam2;
+
+        /// <summary>
+        /// imgExclam3 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgExclam3;
 
         /// <summary>
         /// btnCloseNotif control.
