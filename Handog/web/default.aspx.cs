@@ -31,7 +31,7 @@ namespace Handog.web
 
                 // Retrieve the ID and store it in the session variable 
                 // that your request page expects: "UserAccountNum"
-                Session["UserAccountNum"] = GetAccountID(email);
+                Session["AccountID"] = GetAccountID(email);
 
                 if (role == "Organizer")
                     Response.Redirect("~/org/home.aspx");
