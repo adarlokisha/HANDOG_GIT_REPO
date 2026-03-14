@@ -12,9 +12,9 @@
         <header class="top-header">
             <div class="nav-left">
                 <asp:Image ID="imgSmallLogo" runat="server" ImageUrl="~/images/HandogLogo1.png" CssClass="small-logo" />
-                <a href="home.aspx" class="nav-link">Home</a>
-                <a href="request.aspx" class="nav-link">Requests</a>
-                <a href="events.aspx" class="nav-link active">Events</a>
+                <a href="~/org/home.aspx" runat="server" class="nav-link">Home</a>
+                <a href="~/org/request.aspx" runat="server" class="nav-link">Request</a>
+                <a href="~/org/events.aspx" runat="server" class="nav-link active">Events</a>
             </div>
             <div class="nav-right">
                 <asp:LinkButton ID="btnLogout" runat="server" OnClick="btnLogout_Click" CssClass="nav-link logout-link">LOGOUT</asp:LinkButton>

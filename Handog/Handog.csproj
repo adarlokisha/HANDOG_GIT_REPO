@@ -190,8 +190,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="images\accept-icon.png" />
     <Content Include="images\back-icon.png" />
     <Content Include="images\bell-icon.png" />
+    <Content Include="images\exclam-icon.png" />
     <Content Include="images\HandogBig3.png" />
     <Content Include="images\Event1.jpg" />
     <Content Include="images\Event2.jpg" />
@@ -201,7 +203,9 @@
     <Content Include="images\IT133 - 7.png" />
     <Content Include="images\IT133 - 8.png" />
     <Content Include="images\HandogBig2.png" />
+    <Content Include="images\red-cross.png" />
     <Content Include="images\Volunteer.jpeg" />
+    <Content Include="images\yellow-bell.png" />
     <Content Include="org\events.aspx" />
     <Content Include="org\home.aspx" />
     <Content Include="org\request.aspx" />
