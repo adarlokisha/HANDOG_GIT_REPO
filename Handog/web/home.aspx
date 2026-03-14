@@ -43,13 +43,27 @@
             <section class="locales-section">
                 <h2 class="section-title">List of Locales</h2>
                 <div class="table-container">
-                    <table class="locales-table">
-                        <thead><tr><th></th></tr></thead>
-                        <tbody>
-                            <tr><td></td></tr>
-                            <tr><td></td></tr>
-                        </tbody>
-                    </table>
+                    <asp:GridView ID="gvLocales" runat="server" AutoGenerateColumns="False" 
+                        CssClass="locales-table" GridLines="None" 
+                        HorizontalAlign="Center"> <HeaderStyle HorizontalAlign="Center" />
+                        <RowStyle HorizontalAlign="Center" />
+                        <Columns>
+                            <asp:BoundField DataField="Locale_ID" HeaderText="ID">
+                                <ItemStyle HorizontalAlign="Center" Width="20%" />
+                            </asp:BoundField>
+        
+                            <asp:BoundField DataField="LocaleName" HeaderText="Locale Name">
+                                <ItemStyle HorizontalAlign="Center" Width="40%" />
+                            </asp:BoundField>
+        
+                            <asp:TemplateField HeaderText="Location">
+                                <ItemStyle HorizontalAlign="Center" Width="40%" />
+                                <ItemTemplate>
+                                    <%# Eval("Barangay") %>, <%# Eval("City") %>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
                 </div>
             </section>
 
