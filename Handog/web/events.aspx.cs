@@ -188,6 +188,7 @@ namespace Handog.web
                         lblRegTitle.Text = title;
                         lblRegOrganizer.Text = organizer;
                         lblRegAddress.Text = address;
+                        lblRegVenue.Text = venue; 
                         lblRegEmail.Text = email;
                         lblRegContact.Text = contact;
                         lblRegDate.Text = date;
