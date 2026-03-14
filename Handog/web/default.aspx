@@ -15,10 +15,10 @@
         }
         .modal-content {
             background-color: #fff;
-            width: 450px;
+            width: 600px;
             max-width: 90%;
             margin: 100px auto;
-            padding: 20px;
+            padding: 30px;
             border-radius: 10px;
             position: relative;
         }
@@ -98,25 +98,25 @@
                     <span class="close-btn" onclick="closeSignup()">&times;</span>
                     <h2>Create Account</h2>
 
-                    <asp:Label ID="lblFirstName" runat="server" Text="First Name"></asp:Label>
+                    <asp:Label ID="lblFirstName" runat="server" Text="First Name *"></asp:Label>
                     <asp:TextBox ID="txtFirstName" runat="server" CssClass="form-input"></asp:TextBox>
 
-                    <asp:Label ID="lblLastName" runat="server" Text="Last Name"></asp:Label>
+                    <asp:Label ID="lblLastName" runat="server" Text="Last Name *"></asp:Label>
                     <asp:TextBox ID="txtLastName" runat="server" CssClass="form-input"></asp:TextBox>
 
-                    <asp:Label ID="lblSignupEmail" runat="server" Text="Email"></asp:Label>
+                    <asp:Label ID="lblSignupEmail" runat="server" Text="Email *"></asp:Label>
                     <asp:TextBox ID="txtSignupEmail" runat="server" CssClass="form-input"></asp:TextBox>
 
-                    <asp:Label ID="lblContact" runat="server" Text="Contact Number"></asp:Label>
+                    <asp:Label ID="lblContact" runat="server" Text="Contact Number *"></asp:Label>
                     <asp:TextBox ID="txtContact" runat="server" CssClass="form-input"></asp:TextBox>
 
-                    <asp:Label ID="lblSignupPassword" runat="server" Text="Password"></asp:Label>
+                    <asp:Label ID="lblSignupPassword" runat="server" Text="Password *"></asp:Label>
                     <asp:TextBox ID="txtSignupPassword" runat="server" TextMode="Password" CssClass="form-input"></asp:TextBox>
 
                     <asp:Label ID="lblChurchID" runat="server" Text="Church ID (Required for Organizer)"></asp:Label>
                     <asp:TextBox ID="txtChurchID" runat="server" CssClass="form-input"></asp:TextBox>
 
-                    <asp:Label ID="lblRole" runat="server" Text="Role"></asp:Label><br/>
+                    <asp:Label ID="lblRole" runat="server" Text="Role *"></asp:Label><br/>
                     <asp:RadioButton ID="rbVolunteer" runat="server" Text="Volunteer" GroupName="role" Checked="true" />
                     <asp:RadioButton ID="rbOrganizer" runat="server" Text="Organizer" GroupName="role" /><br/><br/>
 
