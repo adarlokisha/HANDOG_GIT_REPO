@@ -198,6 +198,18 @@ namespace Handog.web
                             lblRegStart.Text = start;
                             lblRegEnd.Text = end;
                             lblRegMax.Text = capacity;
+                        // --- POPULATE REGISTRATION MODAL (lblReg) ---
+                        lblRegEventTitleHeader.Text = title;
+                        lblRegTitle.Text = title;
+                        lblRegOrganizer.Text = organizer;
+                        lblRegAddress.Text = address;
+                        lblRegVenue.Text = venue; 
+                        lblRegEmail.Text = email;
+                        lblRegContact.Text = contact;
+                        lblRegDate.Text = date;
+                        lblRegStart.Text = start;
+                        lblRegEnd.Text = end;
+                        lblRegMax.Text = capacity;
 
                             // Populate View Details Modal Labels
                             lblDetEventTitleHeader.Text = title;

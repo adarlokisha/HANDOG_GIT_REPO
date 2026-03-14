@@ -170,6 +170,40 @@ namespace Handog.org
         protected void btnOpenCreateModal_Click(object sender, EventArgs e)
         {
             ClearCreateEventFields();
+
+            // Pre-fill organizer info from the logged-in account and make fields read-only
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    string userQuery = "SELECT Firstname, Lastname, Email, ContactNum FROM Account WHERE Account_ID = @accID";
+                    using (SqlCommand cmd = new SqlCommand(userQuery, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@accID", Session["AccountID"]);
+                        conn.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                txtOrgName.Text = reader["Firstname"].ToString() + " " + reader["Lastname"].ToString();
+                                txtEmail.Text = reader["Email"].ToString();
+                                txtContact.Text = reader["ContactNum"].ToString();
+
+                                // Make inputs uneditable but still submitted with the form
+                                txtOrgName.ReadOnly = true;
+                                txtEmail.ReadOnly = true;
+                                txtContact.ReadOnly = true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Escape single quotes in the message to prevent JS errors
+                string safeMessage = ex.Message.Replace("'", "");
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Unable to load organizer info: " + safeMessage + "');", true);
+            }
             pnlStep1.Visible = true;
             pnlStep2.Visible = false;
             pnlCreateEventModal.Visible = true;
