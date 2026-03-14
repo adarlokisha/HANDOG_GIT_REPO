@@ -124,12 +124,16 @@ namespace Handog.web
                 string.IsNullOrEmpty(password))
             {
                 lblSignupMessage.Text = "Please fill in all required fields.";
+                // Re-open the modal after postback
+                ClientScript.RegisterStartupScript(this.GetType(), "showSignup", "showSignup();", true);
                 return;
             }
 
             if (rbOrganizer.Checked && string.IsNullOrEmpty(churchID))
             {
                 lblSignupMessage.Text = "Organizer must provide a Church ID.";
+                // Re-open the modal after postback
+                ClientScript.RegisterStartupScript(this.GetType(), "showSignup", "showSignup();", true);
                 return;
             }
 
@@ -169,6 +173,8 @@ namespace Handog.web
             catch (Exception ex)
             {
                 lblSignupMessage.Text = "Error: " + ex.Message;
+                // Re-open the modal so user can see the error
+                ClientScript.RegisterStartupScript(this.GetType(), "showSignup", "showSignup();", true);
             }
         }
     }

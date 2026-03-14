@@ -40,18 +40,27 @@
         }
 
         window.onload = function () {
+            const churchLabel = document.getElementById('<%= lblChurchID.ClientID %>');
             const churchInput = document.getElementById('<%= txtChurchID.ClientID %>');
             const rbOrganizer = document.getElementById('<%= rbOrganizer.ClientID %>');
             const rbVolunteer = document.getElementById('<%= rbVolunteer.ClientID %>');
 
-            rbOrganizer.disabled = true;
-
-            churchInput.addEventListener('input', function () {
-                rbOrganizer.disabled = churchInput.value.trim() === '';
-                if (churchInput.value.trim() === '' && rbOrganizer.checked) {
-                    rbVolunteer.checked = true;
+            function updateChurchVisibility() {
+                if (rbOrganizer.checked) {
+                    churchLabel.style.display = 'inline-block';
+                    churchInput.style.display = 'block';
+                    churchInput.setAttribute('required', 'required');
+                } else {
+                    churchLabel.style.display = 'none';
+                    churchInput.style.display = 'none';
+                    churchInput.removeAttribute('required');
+                    churchInput.value = '';
                 }
-            });
+            }
+            updateChurchVisibility();
+
+            rbOrganizer.addEventListener('change', updateChurchVisibility);
+            rbVolunteer.addEventListener('change', updateChurchVisibility);
         };
     </script>
 </head>
@@ -98,6 +107,10 @@
                     <span class="close-btn" onclick="closeSignup()">&times;</span>
                     <h2>Create Account</h2>
 
+                    <asp:Label ID="lblRole" runat="server" Text="Role *"></asp:Label><br/>
+                    <asp:RadioButton ID="rbVolunteer" runat="server" Text=" Volunteer" GroupName="role" Checked="true" />
+                    <asp:RadioButton ID="rbOrganizer" runat="server" Text=" Organizer" GroupName="role" /><br/><br/>
+
                     <asp:Label ID="lblFirstName" runat="server" Text="First Name *"></asp:Label>
                     <asp:TextBox ID="txtFirstName" runat="server" CssClass="form-input"></asp:TextBox>
 
@@ -113,14 +126,10 @@
                     <asp:Label ID="lblSignupPassword" runat="server" Text="Password *"></asp:Label>
                     <asp:TextBox ID="txtSignupPassword" runat="server" TextMode="Password" CssClass="form-input"></asp:TextBox>
 
-                    <asp:Label ID="lblChurchID" runat="server" Text="Church ID (Required for Organizer)"></asp:Label>
-                    <asp:TextBox ID="txtChurchID" runat="server" CssClass="form-input"></asp:TextBox>
+                    <asp:Label ID="lblChurchID" runat="server" Text="Church ID *" style="display:none;"></asp:Label>
+                    <asp:TextBox ID="txtChurchID" runat="server" CssClass="form-input" style="display:none;"></asp:TextBox>
 
-                    <asp:Label ID="lblRole" runat="server" Text="Role *"></asp:Label><br/>
-                    <asp:RadioButton ID="rbVolunteer" runat="server" Text="Volunteer" GroupName="role" Checked="true" />
-                    <asp:RadioButton ID="rbOrganizer" runat="server" Text="Organizer" GroupName="role" /><br/><br/>
-
-                    <asp:Label ID="lblSignupMessage" runat="server" ForeColor="Red"></asp:Label><br/>
+                    <asp:Label ID="lblSignupMessage" runat="server" ForeColor="Red"></asp:Label><br/><br />
 
                     <asp:Button ID="btnSignup" runat="server" Text="Create Account" CssClass="btn btn-gradient" OnClick="btnSignup_Click"/>
                 </div>
