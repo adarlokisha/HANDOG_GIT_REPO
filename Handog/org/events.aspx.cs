@@ -227,32 +227,133 @@ namespace Handog.org
 
         protected void btnPublish_Click(object sender, EventArgs e)
         {
-            using (SqlConnection conn = new SqlConnection(connString))
+            // Clear previous message
+            lblCreateMsg.Text = "";
+            lblCreateMsg.Visible = false;
+
+            // Gather inputs
+            string title = txtTitle.Text.Trim();
+            string venue = txtVenue.Text.Trim();
+            string address = txtAddress.Text.Trim();
+            string note = txtAnnouncement.Text.Trim();
+            string maxStr = txtMaxVol.Text.Trim();
+            string dateStr = txtDate.Text.Trim();
+            string startStr = txtStart.Text.Trim();
+            string endStr = txtEnd.Text.Trim();
+
+            // Basic validation
+            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(venue) || string.IsNullOrEmpty(address) ||
+                string.IsNullOrEmpty(dateStr) || string.IsNullOrEmpty(startStr) || string.IsNullOrEmpty(endStr) ||
+                string.IsNullOrEmpty(maxStr))
             {
-                string query = @"
-                    INSERT INTO PublishedEvent
-                    (AccountNum, EventTitle, Venue, EventAddress, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement)
-                    VALUES
-                    ((SELECT AccountNum FROM Account WHERE Account_ID = @accID),
-                     @title, @venue, @address, @date, @start, @end, @max, @note)";
-
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@accID", Session["AccountID"]);
-                cmd.Parameters.AddWithValue("@title", txtTitle.Text);
-                cmd.Parameters.AddWithValue("@venue", txtVenue.Text);
-                cmd.Parameters.AddWithValue("@address", txtAddress.Text);
-                cmd.Parameters.AddWithValue("@date", txtDate.Text);
-                cmd.Parameters.AddWithValue("@start", txtStart.Text);
-                cmd.Parameters.AddWithValue("@end", txtEnd.Text);
-                cmd.Parameters.AddWithValue("@max", txtMaxVol.Text);
-                cmd.Parameters.AddWithValue("@note", txtAnnouncement.Text);
-
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                lblCreateMsg.Text = "Please fill in all required fields.";
+                lblCreateMsg.Visible = true;
+                pnlCreateEventModal.Visible = true;
+                pnlStep1.Visible = false;
+                pnlStep2.Visible = true;
+                return;
             }
 
-            pnlCreateEventModal.Visible = false;
-            BindMyEvents();
+            if (!DateTime.TryParse(dateStr, out DateTime implDate))
+            {
+                lblCreateMsg.Text = "Implementation date is invalid.";
+                lblCreateMsg.Visible = true;
+                pnlCreateEventModal.Visible = true;
+                pnlStep1.Visible = false;
+                pnlStep2.Visible = true;
+                return;
+            }
+
+            // parse times (try TimeSpan first, then DateTime)
+            TimeSpan startTime, endTime;
+            if (!TimeSpan.TryParse(startStr, out startTime))
+            {
+                if (DateTime.TryParse(startStr, out DateTime tmpStart)) startTime = tmpStart.TimeOfDay;
+                else
+                {
+                    lblCreateMsg.Text = "Start time is invalid.";
+                    lblCreateMsg.Visible = true;
+                    pnlCreateEventModal.Visible = true;
+                    pnlStep1.Visible = false;
+                    pnlStep2.Visible = true;
+                    return;
+                }
+            }
+
+            if (!TimeSpan.TryParse(endStr, out endTime))
+            {
+                if (DateTime.TryParse(endStr, out DateTime tmpEnd)) endTime = tmpEnd.TimeOfDay;
+                else
+                {
+                    lblCreateMsg.Text = "End time is invalid.";
+                    lblCreateMsg.Visible = true;
+                    pnlCreateEventModal.Visible = true;
+                    pnlStep1.Visible = false;
+                    pnlStep2.Visible = true;
+                    return;
+                }
+            }
+
+            if (!int.TryParse(maxStr, out int maxVol))
+            {
+                lblCreateMsg.Text = "Maximum volunteers must be a number.";
+                lblCreateMsg.Visible = true;
+                pnlCreateEventModal.Visible = true;
+                pnlStep1.Visible = false;
+                pnlStep2.Visible = true;
+                return;
+            }
+
+            // Insert using typed parameters
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    string query = @"
+                        INSERT INTO PublishedEvent
+                        (AccountNum, EventTitle, Venue, EventAddress, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement)
+                        VALUES
+                        ((SELECT AccountNum FROM Account WHERE Account_ID = @accID),
+                         @title, @venue, @address, @date, @start, @end, @max, @note)";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@accID", Session["AccountID"]);
+                        cmd.Parameters.AddWithValue("@title", title);
+                        cmd.Parameters.AddWithValue("@venue", venue);
+                        cmd.Parameters.AddWithValue("@address", address);
+
+                        var pDate = new SqlParameter("@date", System.Data.SqlDbType.Date) { Value = implDate.Date };
+                        var pStart = new SqlParameter("@start", System.Data.SqlDbType.Time) { Value = startTime };
+                        var pEnd = new SqlParameter("@end", System.Data.SqlDbType.Time) { Value = endTime };
+                        var pMax = new SqlParameter("@max", System.Data.SqlDbType.Int) { Value = maxVol };
+
+                        cmd.Parameters.Add(pDate);
+                        cmd.Parameters.Add(pStart);
+                        cmd.Parameters.Add(pEnd);
+                        cmd.Parameters.Add(pMax);
+
+                        cmd.Parameters.AddWithValue("@note", string.IsNullOrWhiteSpace(note) ? DBNull.Value : (object)note);
+
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                // Close modal, clear message and refresh
+                lblCreateMsg.Text = "";
+                lblCreateMsg.Visible = false;
+                pnlCreateEventModal.Visible = false;
+                BindMyEvents();
+            }
+            catch (Exception)
+            {
+                lblCreateMsg.Text = "Unable to publish event. Please try again.";
+                lblCreateMsg.Visible = true;
+                pnlCreateEventModal.Visible = true;
+                pnlStep1.Visible = false;
+                pnlStep2.Visible = true;
+            }
         }
 
         private void ClearCreateEventFields()
