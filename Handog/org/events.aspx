@@ -109,7 +109,7 @@
                         <div class="detail-row"><span class="detail-label">ANNOUNCEMENT:</span> <asp:Label ID="lblAnnouncement" runat="server" /></div>
                     </div>
 
-                    <h2 class="section-heading">REGISTERED VOLUNTEERS</h2>
+                    <h2 class="section-heading">REGISTERED VOLUNTEERS: </h2>
                     <div class="table-container" style="border: 1px solid #333; margin-top: 10px;">
                         <asp:GridView ID="gvVolunteers" runat="server" AutoGenerateColumns="False" CssClass="volunteers-grid" GridLines="Horizontal">
                             <Columns>
@@ -220,6 +220,12 @@
                     
                     <div class="form-row"><span class="form-label">MAXIMUM VOLUNTEERS *</span><asp:TextBox ID="txtMaxVol" runat="server" CssClass="form-input"></asp:TextBox></div>
                     <div class="form-row"><span class="form-label">ADD GENERAL ANNOUNCEMENT:</span><asp:TextBox ID="txtAnnouncement" runat="server" TextMode="MultiLine" Rows="4" CssClass="form-input"></asp:TextBox></div>
+
+                    <div style="display:flex; justify-content:flex-start; margin-bottom:12px;">
+                        <asp:Label ID="lblCreateMsg" runat="server" ForeColor="Red" Visible="false" CssClass="form-error" />
+                    </div>
+
+                    <br />
 
                     <div class="modal-footer-split">
                         <asp:LinkButton ID="btnPrevStep" runat="server" OnClick="btnPrevStep_Click" CssClass="btn-circle-grey">←</asp:LinkButton>
