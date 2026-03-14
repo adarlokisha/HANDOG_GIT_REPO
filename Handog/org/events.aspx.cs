@@ -16,7 +16,7 @@ namespace Handog.org
             if (Session["AccountID"] == null)
             {
                 Response.Redirect("~/web/default.aspx");
-                return; 
+                return;
             }
 
             if (!IsPostBack)
@@ -32,23 +32,77 @@ namespace Handog.org
         {
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                // Explicitly selecting Venue and EventAddress to match your Repeater Evals
                 string query = @"
-            SELECT PublishedEventNum as EventID, EventTitle, EventAddress, Venue,
-                   ImplementationDate as EventDate,
-                   (FORMAT(EventStartTime, 'hh:mm tt') + ' - ' + FORMAT(EventEndTime, 'hh:mm tt')) as TimeStr,
-                   Announcement as Description
-            FROM PublishedEvent
-            WHERE AccountNum = (SELECT AccountNum FROM Account WHERE Account_ID = @accID)";
+        SELECT PublishedEventNum as EventID, 
+               EventTitle, 
+               EventAddress, 
+               Venue,
+               ImplementationDate as EventDate,
+               (FORMAT(EventStartTime, 'hh:mm tt') + ' - ' + FORMAT(EventEndTime, 'hh:mm tt')) as TimeStr,
+               Announcement as Description,
+               1 as IsOwner
+        FROM PublishedEvent
+        WHERE AccountNum = 
+        (SELECT AccountNum FROM Account WHERE Account_ID = @accID)";
 
                 SqlDataAdapter da = new SqlDataAdapter(query, conn);
                 da.SelectCommand.Parameters.AddWithValue("@accID", Session["AccountID"]);
+
                 DataTable dt = new DataTable();
                 da.Fill(dt);
+
                 rptEvents.DataSource = dt;
                 rptEvents.DataBind();
             }
         }
+
+        private void BindAllEvents()
+        {
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                string query = @"
+        SELECT 
+            PublishedEventNum as EventID,
+            EventTitle,
+            EventAddress,
+            Venue,
+            ImplementationDate as EventDate,
+            (FORMAT(EventStartTime, 'hh:mm tt') + ' - ' + FORMAT(EventEndTime, 'hh:mm tt')) as TimeStr,
+            Announcement as Description,
+            CASE 
+                WHEN AccountNum = (SELECT AccountNum FROM Account WHERE Account_ID = @accID)
+                THEN 1 
+                ELSE 0 
+            END as IsOwner
+        FROM PublishedEvent";
+
+                SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                da.SelectCommand.Parameters.AddWithValue("@accID", Session["AccountID"]);
+
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                rptEvents.DataSource = dt;
+                rptEvents.DataBind();
+            }
+        }
+
+        protected void btnAllEvents_Click(object sender, EventArgs e)
+        {
+            BindAllEvents();
+
+            btnAllEvents.CssClass = "tab-link active";
+            btnMyEvents.CssClass = "tab-link";
+        }
+
+        protected void btnMyEvents_Click(object sender, EventArgs e)
+        {
+            BindMyEvents();
+
+            btnMyEvents.CssClass = "tab-link active";
+            btnAllEvents.CssClass = "tab-link";
+        }
+
         protected void rptEvents_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "ViewDetails")
@@ -65,12 +119,10 @@ namespace Handog.org
             {
                 string eventID = e.CommandArgument.ToString();
 
-                // Delete the event and all its registered volunteers
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
                     conn.Open();
 
-                    // 1. Delete registered volunteers first
                     string deleteVolunteers = "DELETE FROM EventVolunteers WHERE PublishedEventNum = @id";
                     using (SqlCommand cmdVol = new SqlCommand(deleteVolunteers, conn))
                     {
@@ -78,7 +130,6 @@ namespace Handog.org
                         cmdVol.ExecuteNonQuery();
                     }
 
-                    // 2. Delete the event itself
                     string deleteEvent = "DELETE FROM PublishedEvent WHERE PublishedEventNum = @id";
                     using (SqlCommand cmdEvent = new SqlCommand(deleteEvent, conn))
                     {
@@ -87,10 +138,8 @@ namespace Handog.org
                     }
                 }
 
-                // Refresh the Repeater
                 BindMyEvents();
 
-                // Optional: show alert
                 ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Event deleted successfully!');", true);
             }
         }
@@ -102,18 +151,19 @@ namespace Handog.org
         {
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                // Mapping Venue and EventAddress while also getting the participant count
                 string query = @"
             SELECT E.*, 
-                   (A.Firstname + ' ' + A.Lastname) as OrganizerName,
+                   (A.Lastname + ', ' + A.Firstname) as OrganizerName,
                    A.Email as OrgEmail, A.ContactNum as OrgPhone,
-                   (SELECT COUNT(*) FROM EventVolunteers WHERE PublishedEventNum = @id AND Is_Accepted = 1) as AcceptedCount
+                   (SELECT COUNT(*) FROM EventVolunteers WHERE PublishedEventNum = @id AND Is_Accepted = 1) as AcceptedCount,
+                   CASE WHEN E.AccountNum = (SELECT AccountNum FROM Account WHERE Account_ID = @accID) THEN 1 ELSE 0 END as CanEdit
             FROM PublishedEvent E
             INNER JOIN Account A ON E.AccountNum = A.AccountNum
             WHERE PublishedEventNum = @id";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@id", eventID);
+                cmd.Parameters.AddWithValue("@accID", Session["AccountID"]);
                 conn.Open();
 
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -123,11 +173,8 @@ namespace Handog.org
                         lblTopTitle.Text = reader["EventTitle"].ToString().ToUpper();
                         lblTitle.Text = reader["EventTitle"].ToString();
                         lblOrg.Text = reader["OrganizerName"].ToString();
-
-                        // Connection points for your request:
                         lblVenue.Text = reader["Venue"].ToString();
                         lblAddress.Text = reader["EventAddress"].ToString();
-
                         lblEmail.Text = reader["OrgEmail"].ToString();
                         lblContact.Text = reader["OrgPhone"].ToString();
                         lblDate.Text = Convert.ToDateTime(reader["ImplementationDate"]).ToString("MMMM dd, yyyy");
@@ -135,9 +182,10 @@ namespace Handog.org
                         lblEnd.Text = Convert.ToDateTime(reader["EventEndTime"]).ToString("t");
                         lblMax.Text = reader["VolunteerCapacity"].ToString();
                         lblAnnouncement.Text = reader["Announcement"].ToString();
-
-                        // Dynamic Participant Count
                         lblExpectedPart.Text = reader["AcceptedCount"].ToString();
+
+                        // Show or hide "Edit All Details" link
+                        btnEditAll.Visible = Convert.ToInt32(reader["CanEdit"]) == 1;
                     }
                 }
             }
@@ -169,69 +217,51 @@ namespace Handog.org
         // ==============================
         protected void btnOpenCreateModal_Click(object sender, EventArgs e)
         {
-            ClearCreateEventFields();
+            pnlCreateEventModal.Visible = true;
+            pnlStep1.Visible = true;
+            pnlStep2.Visible = false;
 
-            // Pre-fill organizer info from the logged-in account and make fields read-only
             try
             {
                 using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlCommand cmd = new SqlCommand(@"
+                    SELECT Lastname, Firstname, Email, ContactNum
+                    FROM Account
+                    WHERE Account_ID = @AccountID", conn))
                 {
-                    string userQuery = "SELECT Firstname, Lastname, Email, ContactNum FROM Account WHERE Account_ID = @accID";
-                    using (SqlCommand cmd = new SqlCommand(userQuery, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@accID", Session["AccountID"]);
-                        conn.Open();
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                txtOrgName.Text = reader["Firstname"].ToString() + " " + reader["Lastname"].ToString();
-                                txtEmail.Text = reader["Email"].ToString();
-                                txtContact.Text = reader["ContactNum"].ToString();
+                    cmd.Parameters.AddWithValue("@AccountID", Session["AccountID"]);
+                    conn.Open();
 
-                                // Make inputs uneditable but still submitted with the form
-                                txtOrgName.ReadOnly = true;
-                                txtEmail.ReadOnly = true;
-                                txtContact.ReadOnly = true;
-                            }
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            txtOrgName.Text = $"{reader["Lastname"]}, {reader["Firstname"]}";
+                            txtEmail.Text = reader["Email"].ToString();
+                            txtContact.Text = reader["ContactNum"].ToString();
+
+                            txtOrgName.ReadOnly = true;
+                            txtEmail.ReadOnly = true;
+                            txtContact.ReadOnly = true;
                         }
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                // Escape single quotes in the message to prevent JS errors
-                string safeMessage = ex.Message.Replace("'", "");
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Unable to load organizer info: " + safeMessage + "');", true);
+                lblCreateMsg.Text = "Unable to load organizer info.";
+                lblCreateMsg.Visible = true;
             }
-            pnlStep1.Visible = true;
-            pnlStep2.Visible = false;
-            pnlCreateEventModal.Visible = true;
         }
 
-        protected void btnCloseCreate_Click(object sender, EventArgs e)
-        {
-            pnlCreateEventModal.Visible = false;
-        }
-
-        protected void btnNextStep_Click(object sender, EventArgs e)
-        {
-            pnlStep1.Visible = false;
-            pnlStep2.Visible = true;
-        }
-        protected void btnPrevStep_Click(object sender, EventArgs e)
-        {
-            pnlStep1.Visible = true;
-            pnlStep2.Visible = false;
-        }
+        protected void btnCloseCreate_Click(object sender, EventArgs e) => pnlCreateEventModal.Visible = false;
+        protected void btnNextStep_Click(object sender, EventArgs e) { pnlStep1.Visible = false; pnlStep2.Visible = true; }
+        protected void btnPrevStep_Click(object sender, EventArgs e) { pnlStep1.Visible = true; pnlStep2.Visible = false; }
 
         protected void btnPublish_Click(object sender, EventArgs e)
         {
-            // Clear previous message
-            lblCreateMsg.Text = "";
             lblCreateMsg.Visible = false;
 
-            // Gather inputs
             string title = txtTitle.Text.Trim();
             string venue = txtVenue.Text.Trim();
             string address = txtAddress.Text.Trim();
@@ -241,14 +271,12 @@ namespace Handog.org
             string startStr = txtStart.Text.Trim();
             string endStr = txtEnd.Text.Trim();
 
-            // Basic validation
             if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(venue) || string.IsNullOrEmpty(address) ||
                 string.IsNullOrEmpty(dateStr) || string.IsNullOrEmpty(startStr) || string.IsNullOrEmpty(endStr) ||
                 string.IsNullOrEmpty(maxStr))
             {
                 lblCreateMsg.Text = "Please fill in all required fields.";
                 lblCreateMsg.Visible = true;
-                pnlCreateEventModal.Visible = true;
                 pnlStep1.Visible = false;
                 pnlStep2.Visible = true;
                 return;
@@ -258,170 +286,109 @@ namespace Handog.org
             {
                 lblCreateMsg.Text = "Implementation date is invalid.";
                 lblCreateMsg.Visible = true;
-                pnlCreateEventModal.Visible = true;
                 pnlStep1.Visible = false;
                 pnlStep2.Visible = true;
                 return;
             }
 
-            // parse times (try TimeSpan first, then DateTime)
-            TimeSpan startTime, endTime;
-            if (!TimeSpan.TryParse(startStr, out startTime))
-            {
-                if (DateTime.TryParse(startStr, out DateTime tmpStart)) startTime = tmpStart.TimeOfDay;
-                else
-                {
-                    lblCreateMsg.Text = "Start time is invalid.";
-                    lblCreateMsg.Visible = true;
-                    pnlCreateEventModal.Visible = true;
-                    pnlStep1.Visible = false;
-                    pnlStep2.Visible = true;
-                    return;
-                }
-            }
+            if (!TimeSpan.TryParse(startStr, out TimeSpan startTime))
+                startTime = DateTime.TryParse(startStr, out DateTime tmp) ? tmp.TimeOfDay : TimeSpan.Zero;
 
-            if (!TimeSpan.TryParse(endStr, out endTime))
-            {
-                if (DateTime.TryParse(endStr, out DateTime tmpEnd)) endTime = tmpEnd.TimeOfDay;
-                else
-                {
-                    lblCreateMsg.Text = "End time is invalid.";
-                    lblCreateMsg.Visible = true;
-                    pnlCreateEventModal.Visible = true;
-                    pnlStep1.Visible = false;
-                    pnlStep2.Visible = true;
-                    return;
-                }
-            }
+            if (!TimeSpan.TryParse(endStr, out TimeSpan endTime))
+                endTime = DateTime.TryParse(endStr, out DateTime tmp) ? tmp.TimeOfDay : TimeSpan.Zero;
 
             if (!int.TryParse(maxStr, out int maxVol))
             {
                 lblCreateMsg.Text = "Maximum volunteers must be a number.";
                 lblCreateMsg.Visible = true;
-                pnlCreateEventModal.Visible = true;
                 pnlStep1.Visible = false;
                 pnlStep2.Visible = true;
                 return;
             }
 
-            // Insert using typed parameters
             try
             {
                 using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlCommand cmd = new SqlCommand(@"
+                    INSERT INTO PublishedEvent
+                    (AccountNum, EventTitle, Venue, EventAddress, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement)
+                    VALUES
+                    ((SELECT AccountNum FROM Account WHERE Account_ID = @accID),
+                     @title, @venue, @address, @date, @start, @end, @max, @note)", conn))
                 {
-                    string query = @"
-                        INSERT INTO PublishedEvent
-                        (AccountNum, EventTitle, Venue, EventAddress, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement)
-                        VALUES
-                        ((SELECT AccountNum FROM Account WHERE Account_ID = @accID),
-                         @title, @venue, @address, @date, @start, @end, @max, @note)";
+                    cmd.Parameters.AddWithValue("@accID", Session["AccountID"]);
+                    cmd.Parameters.AddWithValue("@title", title);
+                    cmd.Parameters.AddWithValue("@venue", venue);
+                    cmd.Parameters.AddWithValue("@address", address);
+                    cmd.Parameters.Add("@date", SqlDbType.Date).Value = implDate.Date;
+                    cmd.Parameters.Add("@start", SqlDbType.Time).Value = startTime;
+                    cmd.Parameters.Add("@end", SqlDbType.Time).Value = endTime;
+                    cmd.Parameters.Add("@max", SqlDbType.Int).Value = maxVol;
+                    cmd.Parameters.AddWithValue("@note", string.IsNullOrWhiteSpace(note) ? DBNull.Value : (object)note);
 
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@accID", Session["AccountID"]);
-                        cmd.Parameters.AddWithValue("@title", title);
-                        cmd.Parameters.AddWithValue("@venue", venue);
-                        cmd.Parameters.AddWithValue("@address", address);
-
-                        var pDate = new SqlParameter("@date", System.Data.SqlDbType.Date) { Value = implDate.Date };
-                        var pStart = new SqlParameter("@start", System.Data.SqlDbType.Time) { Value = startTime };
-                        var pEnd = new SqlParameter("@end", System.Data.SqlDbType.Time) { Value = endTime };
-                        var pMax = new SqlParameter("@max", System.Data.SqlDbType.Int) { Value = maxVol };
-
-                        cmd.Parameters.Add(pDate);
-                        cmd.Parameters.Add(pStart);
-                        cmd.Parameters.Add(pEnd);
-                        cmd.Parameters.Add(pMax);
-
-                        cmd.Parameters.AddWithValue("@note", string.IsNullOrWhiteSpace(note) ? DBNull.Value : (object)note);
-
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
-                    }
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
                 }
 
-                // Close modal, clear message and refresh
-                lblCreateMsg.Text = "";
-                lblCreateMsg.Visible = false;
                 pnlCreateEventModal.Visible = false;
                 BindMyEvents();
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Event published successfully!');", true);
             }
-            catch (Exception)
+            catch
             {
                 lblCreateMsg.Text = "Unable to publish event. Please try again.";
                 lblCreateMsg.Visible = true;
-                pnlCreateEventModal.Visible = true;
                 pnlStep1.Visible = false;
                 pnlStep2.Visible = true;
             }
         }
 
-        private void ClearCreateEventFields()
-        {
-            txtTitle.Text = "";
-            txtOrgName.Text = "";
-            txtVenue.Text = "";
-            txtAddress.Text = "";
-            txtEmail.Text = "";
-            txtContact.Text = "";
-            txtDate.Text = "";
-            txtStart.Text = "";
-            txtEnd.Text = "";
-            txtMaxVol.Text = "";
-            txtAnnouncement.Text = "";
-        }
-
         // ==============================
         // 4. HEADER BUTTONS
         // ==============================
-        protected void btnBell_Click(object sender, EventArgs e)
-        {
-            pnlNotifications.Visible = true;
-        }
-
-        protected void btnLogout_Click(object sender, EventArgs e)
-        {
-            Session.Abandon();
-            Response.Redirect("~/web/default.aspx");
-        }
-
-        protected void btnCloseNotif_Click(object sender, EventArgs e)
-        {
-            pnlNotifications.Visible = false;
-        }
+        protected void btnBell_Click(object sender, EventArgs e) => pnlNotifications.Visible = true;
+        protected void btnLogout_Click(object sender, EventArgs e) { Session.Abandon(); Response.Redirect("~/web/default.aspx"); }
+        protected void btnCloseNotif_Click(object sender, EventArgs e) => pnlNotifications.Visible = false;
 
         // ==============================
         // 5. EDIT / SAVE EVENT
         // ==============================
         protected void btnEdit_Click(object sender, EventArgs e)
         {
-            if (ViewState["SelectedEventID"] != null)
-            {
-                hfEditingEventID.Value = ViewState["SelectedEventID"].ToString();
+            if (ViewState["SelectedEventID"] == null) return;
 
-                txtEditTitle.Text = lblTitle.Text;
-                txtEditVenueName.Text = lblVenue.Text;
-                txtEditAddress.Text = lblAddress.Text;
-                txtEditMax.Text = lblMax.Text;
-                txtEditAnnounce.Text = lblAnnouncement.Text;
+            hfEditingEventID.Value = ViewState["SelectedEventID"].ToString();
 
-                try
-                {
-                    txtEditDate.Text = DateTime.Parse(lblDate.Text).ToString("yyyy-MM-dd");
-                    txtEditStart.Text = DateTime.Parse(lblStart.Text).ToString("HH:mm");
-                    txtEditEnd.Text = DateTime.Parse(lblEnd.Text).ToString("HH:mm");
-                }
-                catch { }
+            txtEditTitle.Text = lblTitle.Text;
+            txtEditVenueName.Text = lblVenue.Text;
+            txtEditAddress.Text = lblAddress.Text;
+            txtEditMax.Text = lblMax.Text;
+            txtEditAnnounce.Text = lblAnnouncement.Text;
 
-                pnlEditEvent.Visible = true;
-            }
+            txtEditDate.Text = DateTime.TryParse(lblDate.Text, out DateTime d) ? d.ToString("yyyy-MM-dd") : "";
+            txtEditStart.Text = DateTime.TryParse(lblStart.Text, out DateTime s) ? s.ToString("HH:mm") : "";
+            txtEditEnd.Text = DateTime.TryParse(lblEnd.Text, out DateTime eT) ? eT.ToString("HH:mm") : "";
+
+            pnlEditEvent.Visible = true;
         }
 
         protected void btnSaveEdit_Click(object sender, EventArgs e)
         {
-            using (SqlConnection conn = new SqlConnection(connString))
+            if (string.IsNullOrEmpty(hfEditingEventID.Value)) return;
+
+            if (!DateTime.TryParse(txtEditDate.Text, out DateTime implDate) ||
+                !TimeSpan.TryParse(txtEditStart.Text, out TimeSpan startTime) ||
+                !TimeSpan.TryParse(txtEditEnd.Text, out TimeSpan endTime) ||
+                !int.TryParse(txtEditMax.Text, out int maxVol))
             {
-                string query = @"
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Invalid date/time/volunteer count.');", true);
+                return;
+            }
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlCommand cmd = new SqlCommand(@"
                     UPDATE PublishedEvent
                     SET EventTitle = @title,
                         Venue = @venueName,
@@ -431,32 +398,34 @@ namespace Handog.org
                         EventEndTime = @end,
                         VolunteerCapacity = @max,
                         Announcement = @announce
-                    WHERE PublishedEventNum = @id";
+                    WHERE PublishedEventNum = @id", conn))
+                {
+                    cmd.Parameters.AddWithValue("@title", txtEditTitle.Text.Trim());
+                    cmd.Parameters.AddWithValue("@venueName", txtEditVenueName.Text.Trim());
+                    cmd.Parameters.AddWithValue("@address", txtEditAddress.Text.Trim());
+                    cmd.Parameters.Add("@date", SqlDbType.Date).Value = implDate.Date;
+                    cmd.Parameters.Add("@start", SqlDbType.Time).Value = startTime;
+                    cmd.Parameters.Add("@end", SqlDbType.Time).Value = endTime;
+                    cmd.Parameters.Add("@max", SqlDbType.Int).Value = maxVol;
+                    cmd.Parameters.AddWithValue("@announce", string.IsNullOrWhiteSpace(txtEditAnnounce.Text) ? DBNull.Value : (object)txtEditAnnounce.Text.Trim());
+                    cmd.Parameters.AddWithValue("@id", hfEditingEventID.Value);
 
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@title", txtEditTitle.Text);
-                cmd.Parameters.AddWithValue("@address", txtEditAddress.Text);
-                cmd.Parameters.AddWithValue("@venueName", txtEditVenueName.Text);
-                cmd.Parameters.AddWithValue("@date", txtEditDate.Text);
-                cmd.Parameters.AddWithValue("@start", txtEditStart.Text);
-                cmd.Parameters.AddWithValue("@end", txtEditEnd.Text);
-                cmd.Parameters.AddWithValue("@max", txtEditMax.Text);
-                cmd.Parameters.AddWithValue("@announce", txtEditAnnounce.Text);
-                cmd.Parameters.AddWithValue("@id", hfEditingEventID.Value);
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                pnlEditEvent.Visible = false;
+                LoadEventManagementData(hfEditingEventID.Value);
+                BindMyEvents();
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Event updated successfully!');", true);
             }
-
-            pnlEditEvent.Visible = false;
-            LoadEventManagementData(hfEditingEventID.Value);
-            BindMyEvents();
-
-            ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Database updated successfully!');", true);
+            catch
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Error updating event.');", true);
+            }
         }
 
         protected void btnCloseEdit_Click(object sender, EventArgs e) => pnlEditEvent.Visible = false;
-
         protected void btnBackToMain_Click(object sender, EventArgs e)
         {
             pnlMainEvents.Visible = true;
