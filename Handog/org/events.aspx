@@ -33,8 +33,9 @@
             <!-- TOP ACTIONS -->
             <div class="top-actions">
                 <div class="search-bar-container">
-                    <asp:Image ID="imgSearchIcon" runat="server" ImageUrl="~/images/search-icon.png" CssClass="search-icon" />
-                    <asp:TextBox ID="txtSearch" runat="server" CssClass="search-input" placeholder="Search for an event..."></asp:TextBox>
+                    <asp:ImageButton ID="btnSearchIcon" runat="server" ImageUrl="~/images/search-icon.png" CssClass="search-icon" OnClick="btnSearchIcon_Click" />
+                    
+                    <asp:TextBox ID="txtSearch" runat="server" CssClass="search-input" placeholder="Search for an event..." AutoPostBack="true" OnTextChanged="txtSearch_TextChanged"></asp:TextBox>
                 </div>
                 <asp:LinkButton ID="btnBell" runat="server" OnClick="btnBell_Click">
                     <asp:Image ID="imgBell" runat="server" ImageUrl="~/images/bell-icon.png" CssClass="bell-icon" />

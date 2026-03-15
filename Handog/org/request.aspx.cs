@@ -96,10 +96,10 @@ namespace Handog.org
                 conn.Open();
 
                 // 1. Fetch Organizer Details to lock them in
-                string orgQuery = "SELECT Firstname, Lastname, Email, ContactNum FROM Account WHERE AccountNum = @AccNum";
+                string orgQuery = "SELECT Firstname, Lastname, Email, ContactNum FROM Account WHERE Account_ID = @AccID";
                 using (SqlCommand cmd = new SqlCommand(orgQuery, conn))
                 {
-                    cmd.Parameters.AddWithValue("@AccNum", Session["AccountID"]);
+                    cmd.Parameters.AddWithValue("@AccID", Session["AccountID"]);
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
@@ -117,17 +117,27 @@ namespace Handog.org
                 }
 
                 // 2. Fetch Request Nature for the Title
-                string reqQuery = @"SELECT rt.Type_of_Request 
+                string reqQuery = @"SELECT rt.Type_of_Request, 
+                                           (a.Firstname + ' ' + a.Lastname) AS RequestorName 
                                     FROM Request r 
                                     INNER JOIN RequestType rt ON r.RequestTypeNum = rt.RequestTypeNum 
+                                    INNER JOIN Account a ON r.AccountNum = a.AccountNum
                                     WHERE r.RequestNum = @ReqNum";
+
                 using (SqlCommand cmd = new SqlCommand(reqQuery, conn))
                 {
                     cmd.Parameters.AddWithValue("@ReqNum", requestID);
-                    object reqType = cmd.ExecuteScalar();
-                    if (reqType != null)
+
+                    // We use a DataReader here because we are fetching multiple columns now!
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        txtTitle.Text = reqType.ToString() + " Event";
+                        if (reader.Read())
+                        {
+                            string reqType = reader["Type_of_Request"].ToString();
+                            string requestorName = reader["RequestorName"].ToString();
+                            txtTitle.Text = "";
+                            txtAnnouncement.Text = $"This event was created because of a request having a purpose of '{reqType}' for {requestorName}.\n\n-Add description here or modify if you like-";
+                        }
                     }
                 }
             }
@@ -217,7 +227,8 @@ namespace Handog.org
                         INSERT INTO PublishedEvent
                         (AccountNum, EventTitle, Venue, EventAddress, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement)
                         VALUES
-                        (@accID, @title, @venue, @address, @date, @start, @end, @max, @note)";
+                        ((SELECT AccountNum FROM Account WHERE Account_ID = @accID), 
+                         @title, @venue, @address, @date, @start, @end, @max, @note)";
 
                     using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
                     {

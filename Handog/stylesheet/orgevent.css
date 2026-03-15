@@ -669,3 +669,29 @@ body {
     margin: 0 10px;
     color: #aaa;
 }
+
+/* ==========================================================================
+     SEARCH BAR & ICON ANIMATIONS
+   ========================================================================== */
+
+.search-icon {
+    height: 32px;
+    width: 32px;
+    margin-right: 15px;
+    opacity: 0.5;
+    cursor: pointer;
+    padding: 6px; 
+    border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+}
+
+    .search-icon:hover {
+        opacity: 1;
+        transform: scale(1.15);
+        background-color: rgba(251, 193, 75, 0.3);
+    }
+
+    .search-icon:active {
+        transform: scale(0.90);
+        background-color: rgba(251, 193, 75, 0.6);
+    }

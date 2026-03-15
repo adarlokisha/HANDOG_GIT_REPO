@@ -103,6 +103,63 @@ namespace Handog.org
             btnAllEvents.CssClass = "tab-link";
         }
 
+        // ==============================
+        // SEARCH FUNCTIONALITY
+        // ==============================
+        protected void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            PerformSearch();
+        }
+
+        protected void btnSearchIcon_Click(object sender, ImageClickEventArgs e)
+        {
+            PerformSearch();
+        }
+
+        private void PerformSearch()
+        {
+            string keyword = txtSearch.Text.Trim();
+            bool isMyEventsTab = btnMyEvents.CssClass.Contains("active");
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                string query = @"
+                    SELECT PublishedEventNum as EventID, 
+                           EventTitle, EventAddress, Venue,
+                           ImplementationDate as EventDate,
+                           (FORMAT(EventStartTime, 'hh:mm tt') + ' - ' + FORMAT(EventEndTime, 'hh:mm tt')) as TimeStr,
+                           Announcement as Description,
+                           CASE 
+                               WHEN AccountNum = (SELECT AccountNum FROM Account WHERE Account_ID = @accID) 
+                               THEN 1 ELSE 0 
+                           END as IsOwner
+                    FROM PublishedEvent
+                    WHERE EventTitle LIKE @keyword";
+
+                // If they are on the "My Events" tab, filter out other organizers' events
+                if (isMyEventsTab)
+                {
+                    query += " AND AccountNum = (SELECT AccountNum FROM Account WHERE Account_ID = @accID)";
+                }
+
+                query += " ORDER BY ImplementationDate DESC";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@accID", Session["AccountID"]);
+                    cmd.Parameters.AddWithValue("@keyword", "%" + keyword + "%");
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    rptEvents.DataSource = dt;
+                    rptEvents.DataBind();
+                }
+            }
+        }
+
+
         protected void rptEvents_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "ViewDetails")

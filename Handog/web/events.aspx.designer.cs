@@ -42,13 +42,13 @@ namespace Handog.web
         protected global::System.Web.UI.WebControls.LinkButton btnLogout;
 
         /// <summary>
-        /// imgSearchIcon control.
+        /// btnSearchIcon control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgSearchIcon;
+        protected global::System.Web.UI.WebControls.ImageButton btnSearchIcon;
 
         /// <summary>
         /// txtSearch control.

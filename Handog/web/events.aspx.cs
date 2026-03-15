@@ -33,6 +33,49 @@ namespace Handog.web
                 rptEvents.DataBind();
             }
         }
+
+        // ==============================
+        // SEARCH FUNCTIONALITY
+        // ==============================
+        protected void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            PerformSearch();
+        }
+
+        protected void btnSearchIcon_Click(object sender, ImageClickEventArgs e)
+        {
+            PerformSearch();
+        }
+
+        private void PerformSearch()
+        {
+            string keyword = txtSearch.Text.Trim();
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+
+                string query = @"
+                    SELECT PublishedEventNum, EventTitle, EventAddress, Venue, 
+                           ImplementationDate, EventStartTime, EventEndTime, Announcement 
+                    FROM PublishedEvent
+                    WHERE EventTitle LIKE @keyword
+                    ORDER BY ImplementationDate DESC";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@keyword", "%" + keyword + "%");
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    rptEvents.DataSource = dt;
+                    rptEvents.DataBind();
+                }
+            }
+        }
+
+
         public bool IsUserRegistered(object eventNum)
         {
             // Use AccountID if that is what you set during login

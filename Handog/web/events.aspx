@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Handog - Events</title>
-    <link href="~/stylesheet/events.css" rel="stylesheet" type="text/css" />
+    <link href="~/stylesheet/events.css?v=1" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <form id="form1" runat="server">
@@ -24,8 +24,8 @@
         <main class="main-content">
             <div class="search-header">
                 <div class="search-bar-container">
-                    <asp:Image ID="imgSearchIcon" runat="server" ImageUrl="~/images/search-icon.png" CssClass="search-icon" />
-                    <asp:TextBox ID="txtSearch" runat="server" CssClass="search-input" placeholder="Search for an event..."></asp:TextBox>
+                    <asp:ImageButton ID="btnSearchIcon" runat="server" ImageUrl="~/images/search-icon.png" CssClass="search-icon" OnClick="btnSearchIcon_Click" />
+                    <asp:TextBox ID="txtSearch" runat="server" CssClass="search-input" placeholder="Search for an event..." AutoPostBack="true" OnTextChanged="txtSearch_TextChanged"></asp:TextBox>
                 </div>
                 <div class="bell-container">
                     <asp:LinkButton ID="btnBell" runat="server" OnClick="btnBell_Click">

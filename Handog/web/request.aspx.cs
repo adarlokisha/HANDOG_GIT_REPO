@@ -42,14 +42,15 @@ namespace Handog.web
             string connStr = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                // Joining tables to get the name and the type description
+                // Added a WHERE clause to filter out accepted requests!
                 string query = @"SELECT r.RequestDetails, 
-                               rt.Type_of_Request, 
-                               (a.FirstName + ' ' + a.LastName) as AccountName 
-                         FROM Request r
-                         INNER JOIN RequestType rt ON r.RequestTypeNum = rt.RequestTypeNum
-                         INNER JOIN Account a ON r.AccountNum = a.AccountNum
-                         ORDER BY r.RequestNum DESC";
+                                        rt.Type_of_Request, 
+                                        (a.FirstName + ' ' + a.LastName) as AccountName 
+                                 FROM Request r
+                                 INNER JOIN RequestType rt ON r.RequestTypeNum = rt.RequestTypeNum
+                                 INNER JOIN Account a ON r.AccountNum = a.AccountNum
+                                 WHERE r.Is_Accepted IS NULL OR r.Is_Accepted = 0
+                                 ORDER BY r.RequestNum DESC";
 
                 SqlDataAdapter da = new SqlDataAdapter(query, conn);
                 DataTable dt = new DataTable();
