@@ -55,6 +55,7 @@
                     <asp:Repeater ID="rptEvents" runat="server" OnItemCommand="rptEvents_ItemCommand">
                         <ItemTemplate>
                             <div class="event-card">
+                                <!-- Delete button (only visible for owner) -->
                                 <asp:LinkButton 
                                     ID="btnDeleteEvent" 
                                     runat="server"
@@ -66,6 +67,7 @@
                                     X
                                 </asp:LinkButton>
 
+                                <!-- Event Info Section -->
                                 <div class="event-info">
                                     <h2 class="event-name"><%# Eval("EventTitle") %></h2>
                                     <ul class="event-details">
@@ -76,7 +78,12 @@
                                     <p class="event-desc"><%# Eval("Description") %></p>
                                 </div>
 
+                                <!-- Event Image Section -->
                                 <div class="event-image">
+                                    <!-- Background image with alternating classes -->
+                                    <div class='event-card-bg <%# "image-" + ((Container.ItemIndex % 2) + 1) %>'></div>
+
+                                    <!-- View Details Button -->
                                     <asp:Button 
                                         ID="btnViewDetails" 
                                         runat="server" 
@@ -86,7 +93,7 @@
                                         CssClass="btn-view" />
                                 </div>
                             </div>
-                        </ItemTemplate>
+                        </ItemTemplate>                 
                     </asp:Repeater>
                 </div>
 
@@ -99,7 +106,7 @@
             <asp:Panel ID="pnlManageEvent" runat="server" Visible="false">
                 <div class="manage-header">
                     <asp:LinkButton ID="btnBackToMain" runat="server" OnClick="btnBackToMain_Click" CssClass="btn-back-arrow">←</asp:LinkButton>
-                    <h1 class="page-title">MY EVENTS</h1>
+                    <h1 class="page-title">EVENTS</h1>
                 </div>
 
                 <div class="manage-title-box">

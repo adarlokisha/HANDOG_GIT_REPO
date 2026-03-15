@@ -292,10 +292,10 @@ namespace Handog.org
             }
 
             if (!TimeSpan.TryParse(startStr, out TimeSpan startTime))
-                startTime = DateTime.TryParse(startStr, out DateTime tmp) ? tmp.TimeOfDay : TimeSpan.Zero;
+                startTime = DateTime.TryParse(startStr, out DateTime tmpStart) ? tmpStart.TimeOfDay : TimeSpan.Zero;
 
             if (!TimeSpan.TryParse(endStr, out TimeSpan endTime))
-                endTime = DateTime.TryParse(endStr, out DateTime tmp) ? tmp.TimeOfDay : TimeSpan.Zero;
+                endTime = DateTime.TryParse(endStr, out DateTime tmpEnd) ? tmpEnd.TimeOfDay : TimeSpan.Zero;
 
             if (!int.TryParse(maxStr, out int maxVol))
             {
@@ -309,47 +309,64 @@ namespace Handog.org
             try
             {
                 using (SqlConnection conn = new SqlConnection(connString))
-                using (SqlCommand cmd = new SqlCommand(@"
-                    INSERT INTO PublishedEvent
-                    (AccountNum, EventTitle, Venue, EventAddress, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement)
-                    VALUES
-                    ((SELECT AccountNum FROM Account WHERE Account_ID = @accID),
-                     @title, @venue, @address, @date, @start, @end, @max, @note)", conn))
                 {
-                    cmd.Parameters.AddWithValue("@accID", Session["AccountID"]);
-                    cmd.Parameters.AddWithValue("@title", title);
-                    cmd.Parameters.AddWithValue("@venue", venue);
-                    cmd.Parameters.AddWithValue("@address", address);
-                    cmd.Parameters.Add("@date", SqlDbType.Date).Value = implDate.Date;
-                    cmd.Parameters.Add("@start", SqlDbType.Time).Value = startTime;
-                    cmd.Parameters.Add("@end", SqlDbType.Time).Value = endTime;
-                    cmd.Parameters.Add("@max", SqlDbType.Int).Value = maxVol;
-                    cmd.Parameters.AddWithValue("@note", string.IsNullOrWhiteSpace(note) ? DBNull.Value : (object)note);
-
                     conn.Open();
-                    cmd.ExecuteNonQuery();
+
+                    // STEP 1: Get AccountNum safely
+                    int accountNum;
+                    using (SqlCommand getAcc = new SqlCommand(
+                        "SELECT AccountNum FROM Account WHERE Account_ID = @accID", conn))
+                    {
+                        getAcc.Parameters.AddWithValue("@accID", Session["AccountID"]);
+
+                        object result = getAcc.ExecuteScalar();
+
+                        if (result == null)
+                        {
+                            lblCreateMsg.Text = "Account not found.";
+                            lblCreateMsg.Visible = true;
+                            return;
+                        }
+
+                        accountNum = Convert.ToInt32(result);
+                    }
+
+                    // STEP 2: Insert Event
+                    using (SqlCommand cmd = new SqlCommand(@"
+                INSERT INTO PublishedEvent
+                (AccountNum, EventTitle, Venue, EventAddress, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement)
+                VALUES
+                (@accountNum, @title, @venue, @address, @date, @start, @end, @max, @note)", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@accountNum", accountNum);
+                        cmd.Parameters.AddWithValue("@title", title);
+                        cmd.Parameters.AddWithValue("@venue", venue);
+                        cmd.Parameters.AddWithValue("@address", address);
+                        cmd.Parameters.Add("@date", SqlDbType.Date).Value = implDate.Date;
+                        cmd.Parameters.Add("@start", SqlDbType.Time).Value = startTime;
+                        cmd.Parameters.Add("@end", SqlDbType.Time).Value = endTime;
+                        cmd.Parameters.Add("@max", SqlDbType.Int).Value = maxVol;
+                        cmd.Parameters.AddWithValue("@note", string.IsNullOrWhiteSpace(note) ? DBNull.Value : (object)note);
+
+                        cmd.ExecuteNonQuery();
+                    }
                 }
 
                 pnlCreateEventModal.Visible = false;
                 BindMyEvents();
+
                 ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Event published successfully!');", true);
             }
-            catch
+            catch (Exception ex)
             {
-                lblCreateMsg.Text = "Unable to publish event. Please try again.";
+                // show real error for debugging
+                lblCreateMsg.Text = "Database error: " + ex.Message;
                 lblCreateMsg.Visible = true;
+
                 pnlStep1.Visible = false;
                 pnlStep2.Visible = true;
             }
         }
-
-        // ==============================
-        // 4. HEADER BUTTONS
-        // ==============================
-        protected void btnBell_Click(object sender, EventArgs e) => pnlNotifications.Visible = true;
-        protected void btnLogout_Click(object sender, EventArgs e) { Session.Abandon(); Response.Redirect("~/web/default.aspx"); }
-        protected void btnCloseNotif_Click(object sender, EventArgs e) => pnlNotifications.Visible = false;
-
         // ==============================
         // 5. EDIT / SAVE EVENT
         // ==============================
@@ -431,6 +448,21 @@ namespace Handog.org
             pnlMainEvents.Visible = true;
             pnlManageEvent.Visible = false;
             BindMyEvents();
+        }
+        protected void btnBell_Click(object sender, EventArgs e)
+        {
+            pnlNotifications.Visible = true;
+        }
+
+        protected void btnCloseNotif_Click(object sender, EventArgs e)
+        {
+            pnlNotifications.Visible = false;
+        }
+
+        protected void btnLogout_Click(object sender, EventArgs e)
+        {
+            Session.Abandon();
+            Response.Redirect("~/web/default.aspx");
         }
     }
 }

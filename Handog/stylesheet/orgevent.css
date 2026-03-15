@@ -181,7 +181,10 @@ body {
     margin-left: 20px;
 }
 
-/* Main Events Repeater */
+/* ================================
+   MAIN EVENTS REPEATER FIX
+================================ */
+
 .page-title {
     font-size: 36px;
     font-weight: 900;
@@ -201,6 +204,7 @@ body {
     background-color: #fff;
     min-height: 180px;
     position: relative;
+    overflow: hidden; /* ensures background doesn't spill */
 }
 
 .event-info {
@@ -230,14 +234,49 @@ body {
     font-size: 13px;
 }
 
+/* Event Image Section */
 .event-image {
     flex: 1.5;
     display: flex;
     justify-content: center;
     align-items: center;
     border-left: 1px solid #333;
-    background-image: linear-gradient(rgba(18, 172, 176, 0.65), rgba(18, 172, 176, 0.65)), url('../images/event-placeholder1.png');
+    position: relative; /* ensures the button sits above the background */
+}
+
+.event-card-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-size: cover;
+    background-position: center;
+    z-index: 1; /* behind button */
+    border-radius: 0;
+}
+
+    /* Hardcoded alternating images */
+    .event-card-bg.image-1 {
+        background-image: linear-gradient(rgba(18, 172, 176, 0.3), rgba(18, 172, 176, 0.3)), url('../images/Event1.jpg');
+    }
+
+    .event-card-bg.image-2 {
+        background-image: linear-gradient(rgba(18, 172, 176, 0.3), rgba(18, 172, 176, 0.3)), url('../images/Event2.jpg');
+    }
+
+/* Ensure VIEW DETAILS button sits above background */
+.btn-view {
+    position: relative;
+    z-index: 2;
+    background-color: #fbc14b;
+    color: #000;
+    font-weight: 900;
+    font-size: 14px;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 25px;
+    cursor: pointer;
 }
 
 /* Buttons */

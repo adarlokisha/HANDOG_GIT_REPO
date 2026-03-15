@@ -84,7 +84,7 @@ namespace Handog.web
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
                     // Change 'Account_ID' to 'AccountNum' if that is your actual column name
-                    string query = "SELECT AccountNum FROM [Account] WHERE Email=@Email";
+                    string query = "SELECT Account_ID FROM [Account] WHERE Email=@Email";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
