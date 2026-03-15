@@ -9,11 +9,12 @@ namespace Handog.org
 {
     public partial class _events : System.Web.UI.Page
     {
-        string connString = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
+        private string connString = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["AccountID"] == null)
+            // Ensure user is logged in
+            if (Session["AccountNum"] == null)
             {
                 Response.Redirect("~/web/default.aspx");
                 return;
@@ -30,24 +31,24 @@ namespace Handog.org
         // ==============================
         private void BindMyEvents()
         {
+            int accountNum = Convert.ToInt32(Session["AccountNum"]);
+
             using (SqlConnection conn = new SqlConnection(connString))
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT PublishedEventNum as EventID, 
+                       EventTitle, 
+                       EventAddress, 
+                       Venue,
+                       ImplementationDate as EventDate,
+                       (FORMAT(EventStartTime, 'hh:mm tt') + ' - ' + FORMAT(EventEndTime, 'hh:mm tt')) as TimeStr,
+                       Announcement as Description,
+                       1 as IsOwner
+                FROM PublishedEvent
+                WHERE AccountNum = @accNum
+                ORDER BY ImplementationDate DESC", conn))
             {
-                string query = @"
-        SELECT PublishedEventNum as EventID, 
-               EventTitle, 
-               EventAddress, 
-               Venue,
-               ImplementationDate as EventDate,
-               (FORMAT(EventStartTime, 'hh:mm tt') + ' - ' + FORMAT(EventEndTime, 'hh:mm tt')) as TimeStr,
-               Announcement as Description,
-               1 as IsOwner
-        FROM PublishedEvent
-        WHERE AccountNum = 
-        (SELECT AccountNum FROM Account WHERE Account_ID = @accID)";
-
-                SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                da.SelectCommand.Parameters.AddWithValue("@accID", Session["AccountID"]);
-
+                cmd.Parameters.AddWithValue("@accNum", accountNum);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
 
@@ -58,27 +59,23 @@ namespace Handog.org
 
         private void BindAllEvents()
         {
+            int accountNum = Convert.ToInt32(Session["AccountNum"]);
+
             using (SqlConnection conn = new SqlConnection(connString))
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT PublishedEventNum as EventID,
+                       EventTitle,
+                       EventAddress,
+                       Venue,
+                       ImplementationDate as EventDate,
+                       (FORMAT(EventStartTime, 'hh:mm tt') + ' - ' + FORMAT(EventEndTime, 'hh:mm tt')) as TimeStr,
+                       Announcement as Description,
+                       CASE WHEN AccountNum = @accNum THEN 1 ELSE 0 END as IsOwner
+                FROM PublishedEvent
+                ORDER BY ImplementationDate DESC", conn))
             {
-                string query = @"
-        SELECT 
-            PublishedEventNum as EventID,
-            EventTitle,
-            EventAddress,
-            Venue,
-            ImplementationDate as EventDate,
-            (FORMAT(EventStartTime, 'hh:mm tt') + ' - ' + FORMAT(EventEndTime, 'hh:mm tt')) as TimeStr,
-            Announcement as Description,
-            CASE 
-                WHEN AccountNum = (SELECT AccountNum FROM Account WHERE Account_ID = @accID)
-                THEN 1 
-                ELSE 0 
-            END as IsOwner
-        FROM PublishedEvent";
-
-                SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                da.SelectCommand.Parameters.AddWithValue("@accID", Session["AccountID"]);
-
+                cmd.Parameters.AddWithValue("@accNum", accountNum);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
 
@@ -90,7 +87,6 @@ namespace Handog.org
         protected void btnAllEvents_Click(object sender, EventArgs e)
         {
             BindAllEvents();
-
             btnAllEvents.CssClass = "tab-link active";
             btnMyEvents.CssClass = "tab-link";
         }
@@ -98,7 +94,6 @@ namespace Handog.org
         protected void btnMyEvents_Click(object sender, EventArgs e)
         {
             BindMyEvents();
-
             btnMyEvents.CssClass = "tab-link active";
             btnAllEvents.CssClass = "tab-link";
         }
@@ -106,18 +101,9 @@ namespace Handog.org
         // ==============================
         // SEARCH FUNCTIONALITY
         // ==============================
-        protected void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            PerformSearch();
-        }
-
-        protected void btnSearchIcon_Click(object sender, ImageClickEventArgs e)
-        {
-            PerformSearch();
-        }
-
         private void PerformSearch()
         {
+            int accountNum = Convert.ToInt32(Session["AccountNum"]);
             string keyword = txtSearch.Text.Trim();
             bool isMyEventsTab = btnMyEvents.CssClass.Contains("active");
 
@@ -129,24 +115,18 @@ namespace Handog.org
                            ImplementationDate as EventDate,
                            (FORMAT(EventStartTime, 'hh:mm tt') + ' - ' + FORMAT(EventEndTime, 'hh:mm tt')) as TimeStr,
                            Announcement as Description,
-                           CASE 
-                               WHEN AccountNum = (SELECT AccountNum FROM Account WHERE Account_ID = @accID) 
-                               THEN 1 ELSE 0 
-                           END as IsOwner
+                           CASE WHEN AccountNum = @accNum THEN 1 ELSE 0 END as IsOwner
                     FROM PublishedEvent
                     WHERE EventTitle LIKE @keyword";
 
-                // If they are on the "My Events" tab, filter out other organizers' events
                 if (isMyEventsTab)
-                {
-                    query += " AND AccountNum = (SELECT AccountNum FROM Account WHERE Account_ID = @accID)";
-                }
+                    query += " AND AccountNum = @accNum";
 
                 query += " ORDER BY ImplementationDate DESC";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@accID", Session["AccountID"]);
+                    cmd.Parameters.AddWithValue("@accNum", accountNum);
                     cmd.Parameters.AddWithValue("@keyword", "%" + keyword + "%");
 
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -159,9 +139,16 @@ namespace Handog.org
             }
         }
 
+        protected void txtSearch_TextChanged(object sender, EventArgs e) => PerformSearch();
+        protected void btnSearchIcon_Click(object sender, ImageClickEventArgs e) => PerformSearch();
 
+        // ==============================
+        // EVENT MANAGEMENT - Load / Delete
+        // ==============================
         protected void rptEvents_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
+            int accountNum = Convert.ToInt32(Session["AccountNum"]);
+
             if (e.CommandName == "ViewDetails")
             {
                 string eventID = e.CommandArgument.ToString();
@@ -187,42 +174,39 @@ namespace Handog.org
                         cmdVol.ExecuteNonQuery();
                     }
 
-                    string deleteEvent = "DELETE FROM PublishedEvent WHERE PublishedEventNum = @id";
+                    string deleteEvent = "DELETE FROM PublishedEvent WHERE PublishedEventNum = @id AND AccountNum = @accNum";
                     using (SqlCommand cmdEvent = new SqlCommand(deleteEvent, conn))
                     {
                         cmdEvent.Parameters.AddWithValue("@id", eventID);
+                        cmdEvent.Parameters.AddWithValue("@accNum", accountNum);
                         cmdEvent.ExecuteNonQuery();
                     }
                 }
 
                 BindMyEvents();
-
                 ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Event deleted successfully!');", true);
             }
         }
 
-        // ==============================
-        // 2. MANAGE & EDIT EVENT
-        // ==============================
         private void LoadEventManagementData(string eventID)
         {
+            int accountNum = Convert.ToInt32(Session["AccountNum"]);
+
             using (SqlConnection conn = new SqlConnection(connString))
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT E.*, 
+                       (A.Lastname + ', ' + A.Firstname) as OrganizerName,
+                       A.Email as OrgEmail, A.ContactNum as OrgPhone,
+                       (SELECT COUNT(*) FROM EventVolunteers WHERE PublishedEventNum = @id AND Is_Accepted = 1) as AcceptedCount,
+                       CASE WHEN E.AccountNum = @accNum THEN 1 ELSE 0 END as CanEdit
+                FROM PublishedEvent E
+                INNER JOIN Account A ON E.AccountNum = A.AccountNum
+                WHERE PublishedEventNum = @id", conn))
             {
-                string query = @"
-            SELECT E.*, 
-                   (A.Lastname + ', ' + A.Firstname) as OrganizerName,
-                   A.Email as OrgEmail, A.ContactNum as OrgPhone,
-                   (SELECT COUNT(*) FROM EventVolunteers WHERE PublishedEventNum = @id AND Is_Accepted = 1) as AcceptedCount,
-                   CASE WHEN E.AccountNum = (SELECT AccountNum FROM Account WHERE Account_ID = @accID) THEN 1 ELSE 0 END as CanEdit
-            FROM PublishedEvent E
-            INNER JOIN Account A ON E.AccountNum = A.AccountNum
-            WHERE PublishedEventNum = @id";
-
-                SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@id", eventID);
-                cmd.Parameters.AddWithValue("@accID", Session["AccountID"]);
-                conn.Open();
+                cmd.Parameters.AddWithValue("@accNum", accountNum);
 
+                conn.Open();
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
                     if (reader.Read())
@@ -241,34 +225,34 @@ namespace Handog.org
                         lblAnnouncement.Text = reader["Announcement"].ToString();
                         lblExpectedPart.Text = reader["AcceptedCount"].ToString();
 
-                        // Show or hide "Edit All Details" link
                         btnEditAll.Visible = Convert.ToInt32(reader["CanEdit"]) == 1;
                     }
                 }
             }
+
             LoadVolunteerGrid(eventID);
         }
 
         private void LoadVolunteerGrid(string eventID)
         {
             using (SqlConnection conn = new SqlConnection(connString))
-            {
-                string query = @"
+            using (SqlCommand cmd = new SqlCommand(@"
                 SELECT A.AccountNum as ID, (A.Firstname + ' ' + A.Lastname) as Name,
                        A.Email, A.ContactNum as Contact, EV.VolunteerType
                 FROM EventVolunteers EV
                 INNER JOIN Account A ON EV.AccountNum = A.AccountNum
-                WHERE EV.PublishedEventNum = @id AND EV.Is_Accepted = 1";
+                WHERE EV.PublishedEventNum = @id AND EV.Is_Accepted = 1", conn))
+            {
+                cmd.Parameters.AddWithValue("@id", eventID);
 
-                SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                da.SelectCommand.Parameters.AddWithValue("@id", eventID);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
+
                 gvVolunteers.DataSource = dt;
                 gvVolunteers.DataBind();
             }
         }
-
         // ==============================
         // 3. CREATE EVENT MODAL
         // ==============================
@@ -284,9 +268,9 @@ namespace Handog.org
                 using (SqlCommand cmd = new SqlCommand(@"
                     SELECT Lastname, Firstname, Email, ContactNum
                     FROM Account
-                    WHERE Account_ID = @AccountID", conn))
+                    WHERE AccountNum = @accountNum", conn))
                 {
-                    cmd.Parameters.AddWithValue("@AccountID", Session["AccountID"]);
+                    cmd.Parameters.AddWithValue("@accountNum", Session["AccountNum"]);
                     conn.Open();
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -369,31 +353,13 @@ namespace Handog.org
                 {
                     conn.Open();
 
-                    // STEP 1: Get AccountNum safely
-                    int accountNum;
-                    using (SqlCommand getAcc = new SqlCommand(
-                        "SELECT AccountNum FROM Account WHERE Account_ID = @accID", conn))
-                    {
-                        getAcc.Parameters.AddWithValue("@accID", Session["AccountID"]);
+                    int accountNum = Convert.ToInt32(Session["AccountNum"]);
 
-                        object result = getAcc.ExecuteScalar();
-
-                        if (result == null)
-                        {
-                            lblCreateMsg.Text = "Account not found.";
-                            lblCreateMsg.Visible = true;
-                            return;
-                        }
-
-                        accountNum = Convert.ToInt32(result);
-                    }
-
-                    // STEP 2: Insert Event
                     using (SqlCommand cmd = new SqlCommand(@"
-                INSERT INTO PublishedEvent
-                (AccountNum, EventTitle, Venue, EventAddress, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement)
-                VALUES
-                (@accountNum, @title, @venue, @address, @date, @start, @end, @max, @note)", conn))
+                        INSERT INTO PublishedEvent
+                        (AccountNum, EventTitle, Venue, EventAddress, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement)
+                        VALUES
+                        (@accountNum, @title, @venue, @address, @date, @start, @end, @max, @note)", conn))
                     {
                         cmd.Parameters.AddWithValue("@accountNum", accountNum);
                         cmd.Parameters.AddWithValue("@title", title);
@@ -411,21 +377,19 @@ namespace Handog.org
 
                 pnlCreateEventModal.Visible = false;
                 BindMyEvents();
-
                 ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Event published successfully!');", true);
             }
             catch (Exception ex)
             {
-                // show real error for debugging
                 lblCreateMsg.Text = "Database error: " + ex.Message;
                 lblCreateMsg.Visible = true;
-
                 pnlStep1.Visible = false;
                 pnlStep2.Visible = true;
             }
         }
+
         // ==============================
-        // 5. EDIT / SAVE EVENT
+        // 4. EDIT / SAVE EVENT
         // ==============================
         protected void btnEdit_Click(object sender, EventArgs e)
         {
@@ -500,21 +464,19 @@ namespace Handog.org
         }
 
         protected void btnCloseEdit_Click(object sender, EventArgs e) => pnlEditEvent.Visible = false;
+
         protected void btnBackToMain_Click(object sender, EventArgs e)
         {
             pnlMainEvents.Visible = true;
             pnlManageEvent.Visible = false;
             BindMyEvents();
         }
-        protected void btnBell_Click(object sender, EventArgs e)
-        {
-            pnlNotifications.Visible = true;
-        }
 
-        protected void btnCloseNotif_Click(object sender, EventArgs e)
-        {
-            pnlNotifications.Visible = false;
-        }
+        // ==============================
+        // 5. NOTIFICATIONS / LOGOUT
+        // ==============================
+        protected void btnBell_Click(object sender, EventArgs e) => pnlNotifications.Visible = true;
+        protected void btnCloseNotif_Click(object sender, EventArgs e) => pnlNotifications.Visible = false;
 
         protected void btnLogout_Click(object sender, EventArgs e)
         {

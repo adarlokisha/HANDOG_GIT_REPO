@@ -7,11 +7,11 @@ namespace Handog.web
 {
     public partial class _default : Page
     {
-        string connString = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
+        private string connString = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // nothing needed here for modal; login remains same
+            // No specific Page_Load logic needed for modal/login
         }
 
         // =========================
@@ -22,6 +22,12 @@ namespace Handog.web
             string email = txtEmail.Text.Trim();
             string password = txtPassword.Text;
 
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Please enter email and password.');", true);
+                return;
+            }
+
             string role = GetUserRole(email, password);
 
             if (!string.IsNullOrEmpty(role))
@@ -29,9 +35,9 @@ namespace Handog.web
                 Session["UserEmail"] = email;
                 Session["UserRole"] = role;
 
-                // Retrieve the ID and store it in the session variable 
-                // that your request page expects: "UserAccountNum"
-                Session["AccountID"] = GetAccountID(email);
+                // Store both the database AccountNum and the user-facing AccountID (like A000#)
+                Session["AccountNum"] = GetAccountNum(email);
+                Session["AccountID"] = GetUserFacingAccountID(email);
 
                 if (role == "Organizer")
                     Response.Redirect("~/org/home.aspx");
@@ -40,68 +46,69 @@ namespace Handog.web
             }
             else
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Invalid Credentials');", true);
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Invalid credentials.');", true);
             }
         }
 
         private string GetUserRole(string email, string password)
         {
-            string role = null;
-
             try
             {
                 using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlCommand cmd = new SqlCommand(
+                    "SELECT AccRole FROM [Account] WHERE Email=@Email AND AccPassword=@Password", conn))
                 {
-                    string query = "SELECT AccRole FROM [Account] WHERE Email=@Email AND AccPassword=@Password";
+                    cmd.Parameters.AddWithValue("@Email", email);
+                    cmd.Parameters.AddWithValue("@Password", password);
 
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@Email", email);
-                        cmd.Parameters.AddWithValue("@Password", password);
-
-                        conn.Open();
-                        object result = cmd.ExecuteScalar();
-
-                        if (result != null)
-                            role = result.ToString();
-                    }
+                    conn.Open();
+                    object result = cmd.ExecuteScalar();
+                    return result?.ToString();
                 }
             }
             catch (Exception ex)
             {
                 ClientScript.RegisterStartupScript(this.GetType(), "alert",
-                    $"alert('Error: {ex.Message.Replace("'", "")}');", true);
+                    $"alert('Login Error: {ex.Message.Replace("'", "")}');", true);
+                return null;
             }
-
-            return role;
         }
 
-        private string GetAccountID(string email)
+        private int GetAccountNum(string email)
         {
-            string accountID = null;
             try
             {
                 using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlCommand cmd = new SqlCommand("SELECT AccountNum FROM [Account] WHERE Email=@Email", conn))
                 {
-                    // Change 'Account_ID' to 'AccountNum' if that is your actual column name
-                    string query = "SELECT Account_ID FROM [Account] WHERE Email=@Email";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@Email", email);
-                        conn.Open();
-                        object result = cmd.ExecuteScalar();
-
-                        if (result != null)
-                            accountID = result.ToString();
-                    }
+                    cmd.Parameters.AddWithValue("@Email", email);
+                    conn.Open();
+                    return Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                // Error handling
+                return 0; // default/fallback
             }
-            return accountID;
+        }
+
+        private string GetUserFacingAccountID(string email)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlCommand cmd = new SqlCommand("SELECT Account_ID FROM [Account] WHERE Email=@Email", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Email", email);
+                    conn.Open();
+                    object result = cmd.ExecuteScalar();
+                    return result?.ToString();
+                }
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         // =========================
@@ -115,16 +122,14 @@ namespace Handog.web
             string contact = txtContact.Text.Trim();
             string password = txtSignupPassword.Text;
             string churchID = txtChurchID.Text.Trim();
-
             string role = rbVolunteer.Checked ? "Volunteer" : "Organizer";
 
-            // Simple validation
+            // Validation
             if (string.IsNullOrEmpty(fname) || string.IsNullOrEmpty(lname) ||
                 string.IsNullOrEmpty(email) || string.IsNullOrEmpty(contact) ||
                 string.IsNullOrEmpty(password))
             {
                 lblSignupMessage.Text = "Please fill in all required fields.";
-                // Re-open the modal after postback
                 ClientScript.RegisterStartupScript(this.GetType(), "showSignup", "showSignup();", true);
                 return;
             }
@@ -132,7 +137,6 @@ namespace Handog.web
             if (rbOrganizer.Checked && string.IsNullOrEmpty(churchID))
             {
                 lblSignupMessage.Text = "Organizer must provide a Church ID.";
-                // Re-open the modal after postback
                 ClientScript.RegisterStartupScript(this.GetType(), "showSignup", "showSignup();", true);
                 return;
             }
@@ -140,28 +144,24 @@ namespace Handog.web
             try
             {
                 using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlCommand cmd = new SqlCommand(
+                    @"INSERT INTO [Account] 
+                        (Lastname, Firstname, Email, ContactNum, AccPassword, AccRole, ChurchID)
+                      VALUES (@Last, @First, @Email, @Contact, @Pass, @Role, @ChurchID)", conn))
                 {
-                    string query = @"INSERT INTO [Account]
-                (Lastname, Firstname, Email, ContactNum, AccPassword, AccRole, ChurchID)
-                VALUES
-                (@Last,@First,@Email,@Contact,@Pass,@Role,@ChurchID)";
+                    cmd.Parameters.AddWithValue("@Last", lname);
+                    cmd.Parameters.AddWithValue("@First", fname);
+                    cmd.Parameters.AddWithValue("@Email", email);
+                    cmd.Parameters.AddWithValue("@Contact", contact);
+                    cmd.Parameters.AddWithValue("@Pass", password);
+                    cmd.Parameters.AddWithValue("@Role", role);
+                    cmd.Parameters.AddWithValue("@ChurchID", string.IsNullOrEmpty(churchID) ? DBNull.Value : (object)churchID);
 
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@Last", lname);
-                        cmd.Parameters.AddWithValue("@First", fname);
-                        cmd.Parameters.AddWithValue("@Email", email);
-                        cmd.Parameters.AddWithValue("@Contact", contact);
-                        cmd.Parameters.AddWithValue("@Pass", password);
-                        cmd.Parameters.AddWithValue("@Role", role);
-                        cmd.Parameters.AddWithValue("@ChurchID", string.IsNullOrEmpty(churchID) ? DBNull.Value : (object)churchID);
-
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
-                    }
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
                 }
 
-                // Clear form and show success alert
+                // Reset form
                 txtFirstName.Text = txtLastName.Text = txtSignupEmail.Text = "";
                 txtContact.Text = txtSignupPassword.Text = txtChurchID.Text = "";
                 rbVolunteer.Checked = true;
@@ -173,7 +173,6 @@ namespace Handog.web
             catch (Exception ex)
             {
                 lblSignupMessage.Text = "Error: " + ex.Message;
-                // Re-open the modal so user can see the error
                 ClientScript.RegisterStartupScript(this.GetType(), "showSignup", "showSignup();", true);
             }
         }
