@@ -31,7 +31,7 @@ namespace Handog.org
             }
 
             if (!IsPostBack)
-            {
+            { 
                 SetUserNumericID();
                 BindLocaleGrid();
             }
@@ -68,16 +68,6 @@ namespace Handog.org
         {
             Session.Abandon();
             Response.Redirect("~/web/default.aspx"); // Go up one level to root for login
-        }
-
-        protected void btnBell_Click(object sender, EventArgs e)
-        {
-            pnlNotifications.Visible = true;
-        }
-
-        protected void btnCloseNotif_Click(object sender, EventArgs e)
-        {
-            pnlNotifications.Visible = false;
         }
 
         // --- ORGANIZER HANDLERS ---
@@ -266,6 +256,15 @@ namespace Handog.org
                 }
             }
             BindLocaleGrid();
+        }
+        protected void btnBell_Click(object sender, EventArgs e)
+        {
+            pnlNotifications.Visible = true;
+        }
+
+        protected void btnCloseNotif_Click(object sender, EventArgs e)
+        {
+            pnlNotifications.Visible = false;
         }
     }   
 }

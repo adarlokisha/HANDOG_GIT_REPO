@@ -1,5 +1,5 @@
 ﻿/* ==========================================================================
-    BASE STYLES
+   BASE STYLES & BACKGROUND GRADIENT
    ========================================================================== */
 * {
     box-sizing: border-box;
@@ -9,28 +9,33 @@
 }
 
 body {
-    /* linear-gradient goes from top (cyan) to middle (light blue) to bottom (white) */
     background: linear-gradient(to bottom, #1dd3f8 0%, #c4f0fa 150px, #ffffff 300px);
-    /* Kung gusto mo ichange ung height nung color blue to yellow gradient, change mo lang ung pixels. */
-
-    background-repeat: no-repeat; /* Prevents the gradient from repeating if you do scroll */
+    background-repeat: no-repeat;
     min-height: 100vh;
+    color: #333;
     display: flex;
     flex-direction: column;
 }
 
+#form1 {
+    width: 100%;
+}
+
 /* ==========================================================================
-    HEADER & NAVIGATION
+   HEADER & NAVIGATION (FULL-WIDTH)
    ========================================================================== */
 .top-header {
     background: transparent;
     height: 90px;
-    width: 85%; /* Same as .main-content */
-    max-width: 1100px;
-    margin: 0 auto; /* Centers header with the white box */
+    width: 100vw; /* full viewport width */
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0 40px;
+    position: fixed; /* optional if you want it fixed at top */
+    top: 0;
+    left: 0;
+    z-index: 1000;
 }
 
 .nav-left {
@@ -67,32 +72,32 @@ body {
 }
 
 /* ==========================================================================
-    MAIN CONTENT LAYOUT
+   MAIN CONTENT LAYOUT (CENTERED BOX)
    ========================================================================== */
 .main-content {
     flex: 1;
     background-color: #ffffff;
     width: 85%;
     max-width: 1100px;
-    margin: 30px auto; /* Adds vertical space so the blue shows at the top/bottom */
+    margin: 150px auto 50px auto; /* vertical spacing for fixed header */
     padding: 50px 80px;
     border-radius: 12px;
-    box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.08); /* Soft depth effect */
+    box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
 }
 
 /* ==========================================================================
-    PAGE TITLE AREA
+   PAGE TITLE AREA
    ========================================================================== */
 .page-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end; 
+    align-items: flex-end;
 }
 
 .page-title {
-    color: #f7b700; 
+    color: #f7b700;
     font-size: 32px;
     font-weight: 900;
     margin-bottom: 5px;
@@ -101,7 +106,7 @@ body {
 .page-subtitle {
     font-style: italic;
     font-size: 15px;
-    font-weight:400;
+    font-weight: 400;
     color: #4a4a4a;
 }
 
@@ -112,18 +117,17 @@ body {
 
 .title-divider {
     border: none;
-    border-top: 2px solid #888; /* Dark grey line */
+    border-top: 2px solid #888;
     margin: 15px 0 30px 0;
 }
 
 /* ==========================================================================
-    SCROLLABLE CARDS AREA
+   SCROLLABLE CARDS AREA
    ========================================================================== */
 .cards-scroll-container {
-  
     max-height: 50vh;
-    overflow-y: auto; 
-    padding-right: 20px; 
+    overflow-y: auto;
+    padding-right: 20px;
     margin-bottom: 30px;
 }
 
@@ -142,14 +146,14 @@ body {
     }
 
 /* ==========================================================================
-    INDIVIDUAL REQUEST CARDS
+   INDIVIDUAL REQUEST CARDS
    ========================================================================== */
 .request-card {
-    background-color: #f4f4f4; 
+    background-color: #f4f4f4;
     border-radius: 30px;
     padding: 35px 50px;
     margin-bottom: 30px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08); 
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
     border: 1px solid #e0e0e0;
 }
 
@@ -177,15 +181,15 @@ body {
 }
 
 /* ==========================================================================
-   7. ADD REQUEST BUTTON
+   ADD REQUEST BUTTON
    ========================================================================== */
 .button-container {
     display: flex;
-    justify-content: flex-end; 
+    justify-content: flex-end;
 }
 
 .btn-add {
-    background-color: #fbc14b; 
+    background-color: #fbc14b;
     color: #ffffff;
     font-weight: bold;
     font-size: 16px;
@@ -193,7 +197,7 @@ body {
     border-radius: 30px;
     padding: 15px 35px;
     cursor: pointer;
-    box-shadow: 0px 4px 10px rgba(251, 193, 75, 0.4); 
+    box-shadow: 0px 4px 10px rgba(251, 193, 75, 0.4);
     transition: opacity 0.2s;
 }
 
@@ -201,14 +205,16 @@ body {
         opacity: 0.9;
     }
 
-/* NOTIFICATION */
+/* ==========================================================================
+   MODALS
+   ========================================================================== */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Dimmed background */
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -244,7 +250,6 @@ body {
     letter-spacing: 1px;
 }
 
-/* Items */
 .notification-list {
     flex-grow: 1;
 }
@@ -259,7 +264,7 @@ body {
 }
 
     .notif-item.success {
-        color: #2ecc71; /* Green text for accepted notifications */
+        color: #2ecc71;
     }
 
 .info-icon {
@@ -269,7 +274,6 @@ body {
     color: #333;
 }
 
-/* Footer & Close */
 .modal-footer {
     text-align: right;
     margin-top: 20px;
@@ -299,11 +303,13 @@ body {
     font-size: 12px;
 }
 
-/* REQUEST MODAL SPECIFIC */
+/* ==========================================================================
+   ADD REQUEST MODAL
+   ========================================================================== */
 .request-modal-card {
     background: #fff;
-    padding: 50px 40px; /* Increased padding to give the form room */
-    border-radius: 40px; /* Matching the very rounded corners in your image */
+    padding: 50px 40px;
+    border-radius: 40px;
     width: 90%;
     max-width: 700px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
@@ -323,21 +329,6 @@ body {
     font-weight: bold;
 }
 
-.form-question {
-    font-size: 13px;
-    font-weight: bold;
-    color: #888;
-    display: block;
-    margin-bottom: 10px;
-}
-
-.custom-radio-list label {
-    margin-right: 40px;
-    font-size: 12px;
-    color: #aaa;
-    margin-left: 90px;
-}
-
 .form-label {
     display: block;
     font-size: 12px;
@@ -350,7 +341,7 @@ body {
 .form-input, .form-textarea {
     width: 100%;
     padding: 12px 15px;
-    padding-right: 35px; /* Pushes the dropdown arrow away from the edge */
+    padding-right: 35px;
     border: 1px solid #eee;
     border-radius: 12px;
     background-color: #f6f6f6;

@@ -26,7 +26,7 @@
             <section class="hero-section">
                 <div class="bell-container">
                     <asp:LinkButton ID="btnBell" runat="server" OnClick="btnBell_Click">
-                        <asp:Image ID="imgBell" runat="server" ImageUrl="~/images/bell-icon.png" AlternateText="Notifications" CssClass="bell-icon" />
+                        <asp:Image ID="imgBell" runat="server" ImageUrl="~/images/bell-icon.png" CssClass="bell-icon" />
                     </asp:LinkButton>
                 </div>
 
@@ -149,7 +149,7 @@
                 <!-- Footer / Close Button -->
                 <div class="modal-footer">
                     <asp:LinkButton ID="btnCloseNotif" runat="server" OnClick="btnCloseNotif_Click" CssClass="modal-close">
-                        <asp:Image ID="imgCloseArrow" runat="server" ImageUrl="~/images/red-arrow-icon.png" CssClass="logout-icon" /> CLOSE
+                        <asp:Image ID="imgCloseArrow" runat="server" ImageUrl="~/images/red-cross.png" CssClass="logout-icon" /> CLOSE
                     </asp:LinkButton>
                 </div>
             </div>
