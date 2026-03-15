@@ -17,7 +17,7 @@
                 <a href="~/org/events.aspx" runat="server" class="nav-link">Events</a>
             </div>
             <div class="nav-right">
-                <asp:LinkButton ID="btnLogout" runat="server" onClick="btnLogout_Click" CssClass="nav-link logout-link">LOGOUT</asp:LinkButton>
+                <asp:LinkButton ID="btnLogout" runat="server" OnClick="btnLogout_Click" CssClass="nav-link logout-link">LOGOUT</asp:LinkButton>
             </div>
         </header>
 

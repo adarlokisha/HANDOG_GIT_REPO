@@ -12,9 +12,9 @@ namespace Handog.org
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["AccountID"] == null || Session["UserRole"].ToString() != "Volunteer")
+            if (Session["AccountID"] == null || Session["UserRole"].ToString() != "Organizer")
             {
-                //Boot them out if they aren't logged in as an Volunteer
+                //Boot them out if they aren't logged in as an Organizer
                 Response.Redirect("~/web/default.aspx");
             }
 

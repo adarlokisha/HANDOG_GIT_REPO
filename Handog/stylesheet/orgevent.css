@@ -40,12 +40,20 @@ body {
     font-weight: bold;
     font-size: 16px;
 }
+    .nav-link logout-link {
+        text-decoration: underline;
+    }
 
     .nav-link.active {
         font-size: 22px;
         font-weight: 900;
         text-decoration: underline;
     }
+
+.logout-link {
+    text-decoration: underline;
+}
+
 
 /* Main Layout & Top Actions */
 .main-content {

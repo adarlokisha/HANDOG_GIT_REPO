@@ -74,12 +74,19 @@ body {
     font-size: 16px;
     text-shadow: none; 
 }
+    .nav-link logout-link {
+        text-decoration: underline;
+    }
 
     .nav-link.active {
         font-size: 22px;
         font-weight: 900;
         text-decoration: underline;
     }
+
+.logout-link {
+    text-decoration: underline;
+}
 
 .hero-section {
     padding: 40px 10%;

@@ -47,6 +47,10 @@ body {
     font-size: 16px;
 }
 
+    .nav-link logout-link {
+        text-decoration: underline;
+    }
+
     .nav-link.active {
         font-size: 22px;
         font-weight: 900;
