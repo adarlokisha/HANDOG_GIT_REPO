@@ -4,6 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Handog - Organizer Requests</title>
+    <link rel="icon" type="image/png" href="~/images/HandogLogo2.png" runat="server" />
     <link href="~/stylesheet/orgrequest.css?v=1" rel="stylesheet" type="text/css" />
 </head>
 <body>

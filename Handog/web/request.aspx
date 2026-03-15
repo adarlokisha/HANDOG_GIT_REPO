@@ -4,6 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Handog - Requests</title>
+    <link rel="icon" type="image/png" href="~/images/HandogLogo2.png" runat="server" />
     <link href="~/stylesheet/request.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
