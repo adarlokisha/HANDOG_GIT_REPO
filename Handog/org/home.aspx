@@ -21,6 +21,7 @@
             </div>
         </header>
 
+        <!-- MAIN CONTENT -->
         <main>
             <section class="hero-section">
                 <div class="bell-container">
@@ -40,6 +41,7 @@
                 </div>
             </section>
 
+            <!-- LOCALE GRID -->
             <section class="locales-section">
                 <h2 class="section-title">List of Locales</h2>
 
@@ -52,15 +54,29 @@
                 </div>
 
                 <div class="table-container">
-                    <asp:GridView ID="gvLocales" runat="server" AutoGenerateColumns="False" CssClass="locales-table" GridLines="None">
+                    <asp:GridView ID="gvLocales" runat="server" AutoGenerateColumns="False" 
+                                  CssClass="locales-table" GridLines="None" 
+                                  DataKeyNames="Locale_ID" 
+                                  OnRowCommand="gvLocales_RowCommand">
                         <Columns>
                             <asp:BoundField DataField="LocaleName" HeaderText="LOCALE" HeaderStyle-CssClass="grid-header" />
                             <asp:BoundField DataField="City" HeaderText="CITY" HeaderStyle-CssClass="grid-header" />
                             <asp:BoundField DataField="Barangay" HeaderText="BARANGAY" HeaderStyle-CssClass="grid-header" />
                             <asp:TemplateField HeaderText="ACTIONS" HeaderStyle-CssClass="grid-header">
                                 <ItemTemplate>
-                                    <asp:LinkButton ID="btnEdit" runat="server" Text="EDIT" CssClass="action-link" /> | 
-                                    <asp:LinkButton ID="btnDelete" runat="server" Text="DELETE" CssClass="action-link" />
+                                    <div class="action-links-container">
+                                        <asp:LinkButton ID="btnEdit" runat="server" Text="EDIT" 
+                                            CommandName="EditLocale" CommandArgument='<%# Eval("Locale_ID") %>' 
+                                            Visible='<%# IsOwner(Eval("AccountNum")) %>' CssClass="action-link-item" />
+            
+                                        <asp:Literal ID="litSeparator" runat="server" Text=" | " 
+                                            Visible='<%# IsOwner(Eval("AccountNum")) %>'></asp:Literal>
+
+                                        <asp:LinkButton ID="btnDelete" runat="server" Text="DELETE" 
+                                            CommandName="DeleteLocale" CommandArgument='<%# Eval("Locale_ID") %>' 
+                                            OnClientClick="return confirm('Are you sure?');" 
+                                            Visible='<%# IsOwner(Eval("AccountNum")) %>' CssClass="action-link-item" />
+                                    </div>
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
@@ -68,6 +84,34 @@
                 </div>
             </section>
 
+            <!-- EDIT LOCALE -->
+            <asp:Panel ID="pnlEditLocaleModal" runat="server" CssClass="modal-overlay" Visible="false">
+                <div class="edit-modal-card">
+                    <h2 class="modal-title-yellow">EDIT LOCALE DETAILS</h2>
+                    <hr />
+
+                    <div class="modal-body">
+                        <span class="input-label-modal">Locale Name:</span>
+                        <asp:TextBox ID="txtEditLocaleName" runat="server" CssClass="modal-input"></asp:TextBox>
+            
+                        <span class="input-label-modal">City:</span>
+                        <asp:TextBox ID="txtEditCity" runat="server" CssClass="modal-input"></asp:TextBox>
+            
+                        <span class="input-label-modal">Barangay:</span>
+                        <asp:TextBox ID="txtEditBarangay" runat="server" CssClass="modal-input"></asp:TextBox>
+                    </div>
+
+                    <div class="modal-footer-btns">
+                        <asp:LinkButton ID="btnCancelLocaleEdit" runat="server" OnClick="btnCancelLocaleEdit_Click" CssClass="btn-close-circle">X</asp:LinkButton>
+            
+                        <asp:HiddenField ID="hfSelectedLocaleID" runat="server" />
+            
+                        <asp:Button ID="btnUpdateLocale" runat="server" Text="SAVE CHANGES" CssClass="btn-save-yellow" OnClick="btnUpdateLocale_Click" />
+                    </div>
+                </div>
+            </asp:Panel>
+
+            <!-- STORY SECTION -->
             <section class="story-section">
                 <h2 class="story-title">Our Story</h2>
                 <div class="story-card">

@@ -14,6 +14,14 @@ namespace Handog.org
     {
         private readonly string connString = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
 
+        // this is for checking who inputted locale
+        // This property stores the ID for the duration of the page session
+        private int CurrentUserNumericID
+        {
+            get { return ViewState["UserNumericID"] != null ? (int)ViewState["UserNumericID"] : -1; }
+            set { ViewState["UserNumericID"] = value; }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["AccountID"] == null || Session["UserRole"].ToString() != "Organizer")
@@ -24,10 +32,36 @@ namespace Handog.org
 
             if (!IsPostBack)
             {
+                SetUserNumericID();
                 BindLocaleGrid();
             }
+        }
 
+        private void SetUserNumericID()
+        {
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                string query = "SELECT AccountNum FROM Account WHERE Account_ID = @AccountID";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@AccountID", Session["AccountID"].ToString());
+                    conn.Open();
+                    object result = cmd.ExecuteScalar();
+                    if (result != null)
+                    {
+                        this.CurrentUserNumericID = Convert.ToInt32(result);
+                    }
+                }
+            }
+        }
 
+        //checks if user is the one who added the locale
+
+        protected bool IsOwner(object accountNumFromRow)
+        {
+            if (accountNumFromRow == DBNull.Value || this.CurrentUserNumericID == -1) return false;
+
+            return this.CurrentUserNumericID.ToString() == accountNumFromRow.ToString();
         }
 
         protected void btnLogout_Click(object sender, EventArgs e)
@@ -53,7 +87,7 @@ namespace Handog.org
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 // Note: Ensure your table columns match: LocaleName, City, Barangay
-                string query = "SELECT LocaleName, City, Barangay FROM Locale ORDER BY LocaleName ASC";
+                string query = "SELECT Locale_ID, AccountNum, LocaleName, City, Barangay FROM Locale ORDER BY LocaleName ASC";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
@@ -129,5 +163,109 @@ namespace Handog.org
             txtBarangay.Text = "";
         }
 
-    }
+
+        // EDIT LOCALE BUTTON FUNCTION
+        protected void gvLocales_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            // 1. Single safety check: if argument is empty, stop immediately.
+            if (e.CommandArgument == null || string.IsNullOrEmpty(e.CommandArgument.ToString()))
+            {
+                return;
+            }
+
+            // 2. Extract the ID
+            string localeID = e.CommandArgument.ToString();
+
+           
+            if (e.CommandName == "EditLocale")
+            {
+                try
+                {
+                    hfSelectedLocaleID.Value = localeID;
+                    LoadLocaleData(localeID);
+                    pnlEditLocaleModal.Visible = true;
+                }
+                catch (Exception ex)
+                {
+                    Response.Write("<script>alert('Error loading data: " + ex.Message + "');</script>");
+                }
+            }
+            else if (e.CommandName == "DeleteLocale")
+            {
+                DeleteLocale(localeID);
+            }
+        }
+
+        private void LoadLocaleData(string localeID)
+        {
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                string query = "SELECT LocaleName, City, Barangay FROM Locale WHERE Locale_ID = @ID";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@ID", localeID);
+                    conn.Open();
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        txtEditLocaleName.Text = dr["LocaleName"].ToString();
+                        txtEditCity.Text = dr["City"].ToString();
+                        txtEditBarangay.Text = dr["Barangay"].ToString();
+                    }
+                }
+            }
+        }
+
+        protected void btnUpdateLocale_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                // Safety: Ensure only the owner can update
+                string query = "UPDATE Locale SET LocaleName=@Name, City=@City, Barangay=@Brgy " +
+                               "WHERE Locale_ID=@ID AND AccountNum=@AccNum";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Name", txtEditLocaleName.Text.Trim());
+                    cmd.Parameters.AddWithValue("@City", txtEditCity.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Brgy", txtEditBarangay.Text.Trim());
+                    cmd.Parameters.AddWithValue("@ID", hfSelectedLocaleID.Value);
+                    cmd.Parameters.AddWithValue("@AccNum", this.CurrentUserNumericID);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            pnlEditLocaleModal.Visible = false;
+            BindLocaleGrid();
+        }
+
+        protected void btnCancelLocaleEdit_Click(object sender, EventArgs e)
+        {
+            pnlEditLocaleModal.Visible = false;
+        }
+
+        // DELETE LOCALE FUNCTIONSS
+        private void DeleteLocale(string localeID)
+        {
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                // Add a check in the WHERE clause: AccountNum must match current user
+                string query = "DELETE FROM Locale WHERE Locale_ID = @ID AND AccountNum = @AccNum";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@ID", localeID);
+                    cmd.Parameters.AddWithValue("@AccNum", this.CurrentUserNumericID);
+
+                    conn.Open();
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    if (rowsAffected == 0)
+                    {
+                        ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Unauthorized: You do not have permission to delete this.');", true);
+                    }
+                }
+            }
+            BindLocaleGrid();
+        }
+    }   
 }
