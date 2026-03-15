@@ -197,21 +197,43 @@
             </asp:Panel>
 
             <!-- EDIT EVENT MODAL -->
-            <asp:Panel ID="pnlEditEvent" runat="server" CssClass="modal-overlay" Visible="false">
+                        <asp:Panel ID="pnlEditEvent" runat="server" CssClass="modal-overlay" Visible="false">
                 <div class="create-card">
                     <h2 class="create-title">EDIT EVENT DETAILS</h2>
                     <hr class="create-divider" />
-                    <asp:TextBox ID="txtEditTitle" runat="server" CssClass="form-input" Placeholder="EVENT TITLE" />
-                    <asp:TextBox ID="txtEditVenueName" runat="server" CssClass="form-input" Placeholder="VENUE NAME" />
-                    <asp:TextBox ID="txtEditAddress" runat="server" CssClass="form-input" Placeholder="VENUE ADDRESS" />
-                    <asp:TextBox ID="txtEditDate" runat="server" TextMode="Date" CssClass="form-input" />
-                    <asp:TextBox ID="txtEditStart" runat="server" TextMode="Time" CssClass="form-input" />
-                    <asp:TextBox ID="txtEditEnd" runat="server" TextMode="Time" CssClass="form-input" />
-                    <asp:TextBox ID="txtEditMax" runat="server" TextMode="Number" CssClass="form-input" />
-                    <asp:TextBox ID="txtEditAnnounce" runat="server" TextMode="MultiLine" Rows="4" CssClass="form-input" />
+
+                    <div class="form-row">
+                        <asp:TextBox ID="txtEditTitle" runat="server" CssClass="form-input" Placeholder="EVENT TITLE" />
+                    </div>
+                    <div class="form-row">
+                        <asp:TextBox ID="txtEditVenueName" runat="server" CssClass="form-input" Placeholder="VENUE NAME" />
+                    </div>
+                    <div class="form-row">
+                        <asp:TextBox ID="txtEditAddress" runat="server" CssClass="form-input" Placeholder="VENUE ADDRESS" />
+                    </div>
+
+                    <div class="form-row-split">
+                        <div class="form-third">
+                            <asp:TextBox ID="txtEditDate" runat="server" TextMode="Date" CssClass="form-input" />
+                        </div>
+                        <div class="form-third">
+                            <asp:TextBox ID="txtEditStart" runat="server" TextMode="Time" CssClass="form-input" />
+                        </div>
+                        <div class="form-third">
+                            <asp:TextBox ID="txtEditEnd" runat="server" TextMode="Time" CssClass="form-input" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <asp:TextBox ID="txtEditMax" runat="server" TextMode="Number" CssClass="form-input" />
+                    </div>
+                    <div class="form-row">
+                        <asp:TextBox ID="txtEditAnnounce" runat="server" TextMode="MultiLine" Rows="4" CssClass="form-input" />
+                    </div>
+
                     <div class="modal-footer-split">
                         <asp:LinkButton ID="btnCancelEdit" runat="server" OnClick="btnCloseEdit_Click" CssClass="btn-circle-grey">X</asp:LinkButton>
-                        <asp:Button ID="btnSaveEdit" runat="server" Text="SAVE CHANGES" OnClick="btnSaveEdit_Click" CssClass="btn-primary" />
+                        <asp:Button ID="btnSaveEdit" runat="server" Text="SAVE CHANGES" CssClass="btn-primary" OnClick="btnSaveEdit_Click" />
                     </div>
                 </div>
             </asp:Panel>
