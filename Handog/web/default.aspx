@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Handog - Login</title>
-    <link rel="icon" type="image/png" href="~/images/HandogLogo2.png?v=2" runat="server" />
+    <link rel="icon" type="image/png" href="~/images/HandogLogo2.png" runat="server" />
     <link href="~/stylesheet/default.css" rel="stylesheet" type="text/css" />
     <style>
         .modal-overlay {
