@@ -39,6 +39,17 @@
             document.getElementById('<%= signupPanel.ClientID %>').style.display = 'none';
         }
 
+        function togglePassword() {
+            const pwdInput = document.getElementById('<%= txtPassword.ClientID %>');
+            const chkShow = document.getElementById('<%= chkShowPassword.ClientID %>');
+
+            if (chkShow.checked) {
+                pwdInput.type = 'text';
+            } else {
+                pwdInput.type = 'password';
+            }
+        }
+
         window.onload = function () {
             const churchLabel = document.getElementById('<%= lblChurchID.ClientID %>');
             const churchInput = document.getElementById('<%= txtChurchID.ClientID %>');
@@ -64,6 +75,7 @@
         };
     </script>
 </head>
+
 <body>
     <form id="form1" runat="server">
         <header class="top-header">
@@ -88,8 +100,9 @@
                 </div>
 
                 <div class="options-row">
-                    <div class="checkbox-container">
-                        <asp:CheckBox ID="chkRememberMe" runat="server" Text=" Remember Me" CssClass="remember-checkbox" />
+                   <div class="checkbox-container">
+                        <asp:CheckBox ID="chkShowPassword" runat="server" Text=" Show Password" 
+                            CssClass="showPassword-checkbox" onclick="togglePassword()" />
                     </div>
                     <asp:HyperLink ID="lnkForgotPassword" runat="server" NavigateUrl="~/ForgotPassword.aspx" CssClass="forgot-link">Forgot Password</asp:HyperLink>
                 </div>
