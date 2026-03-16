@@ -19,7 +19,7 @@ body {
 .hero-section {
     padding: 40px 10%;
     position: relative;
-    background-color: transparent !important; /* Added !important just to force it! */
+    background-color: transparent !important; 
 }
 
 /* ==========================================================================
@@ -191,7 +191,7 @@ body {
 .story-card {
     background-color: #ffffff;
     width: 100%;
-    max-width: 750px; /* Widened to match the new beautiful layout */
+    max-width: 750px; 
     padding: 40px 60px;
     border-radius: 20px;
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.08);
@@ -209,13 +209,15 @@ body {
 
 .story-card p {
     font-size: 15px;
-    font-weight: normal; /* Removes the heavy bold text */
+    font-weight: normal; 
     line-height: 1.6;
     color: #333;
 }
 
 
-/* Modal Overlay */
+/* ==========================================================================
+ MODAL OVERLAY
+   ========================================================================== */
 
 .modal-overlay {
     position: fixed !important;

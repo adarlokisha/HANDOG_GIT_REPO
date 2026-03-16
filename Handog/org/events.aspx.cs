@@ -27,7 +27,7 @@ namespace Handog.org
         }
 
         // ==============================
-        // 1. MAIN EVENTS BINDING
+        //  MAIN EVENTS BINDING
         // ==============================
         private void BindMyEvents()
         {
@@ -145,7 +145,7 @@ namespace Handog.org
         protected void btnSearchIcon_Click(object sender, ImageClickEventArgs e) => PerformSearch();
 
         // ==============================
-        // EVENT MANAGEMENT - Load / Delete
+        // EVENT MANAGEMENT 
         // ==============================
         protected void rptEvents_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
@@ -279,7 +279,7 @@ namespace Handog.org
                     {
                         if (reader.Read())
                         {
-                            txtOrgName.Text = $"{reader["Lastname"]}, {reader["Firstname"]}";
+                            txtOrgName.Text = $"{reader["Firstname"]} {reader["Lastname"]}";
                             txtEmail.Text = reader["Email"].ToString();
                             txtContact.Text = reader["ContactNum"].ToString();
 
@@ -306,6 +306,7 @@ namespace Handog.org
             lblCreateMsg.Visible = false;
 
             string title = txtTitle.Text.Trim();
+            string headOrganizer = txtOrgName.Text.Trim();
             string venue = txtVenue.Text.Trim();
             string address = txtAddress.Text.Trim();
             string note = txtAnnouncement.Text.Trim();
@@ -314,7 +315,7 @@ namespace Handog.org
             string startStr = txtStart.Text.Trim();
             string endStr = txtEnd.Text.Trim();
 
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(venue) || string.IsNullOrEmpty(address) ||
+            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(headOrganizer) || string.IsNullOrEmpty(venue) || string.IsNullOrEmpty(address) ||
                 string.IsNullOrEmpty(dateStr) || string.IsNullOrEmpty(startStr) || string.IsNullOrEmpty(endStr) ||
                 string.IsNullOrEmpty(maxStr))
             {
@@ -359,11 +360,12 @@ namespace Handog.org
 
                     using (SqlCommand cmd = new SqlCommand(@"
                         INSERT INTO PublishedEvent
-                        (AccountNum, EventTitle, Venue, EventAddress, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement)
+                        (AccountNum, HeadOrganizer, EventTitle, Venue, EventAddress, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement)
                         VALUES
-                        (@accountNum, @title, @venue, @address, @date, @start, @end, @max, @note)", conn))
+                        (@accountNum, @headOrg, @title, @venue, @address, @date, @start, @end, @max, @note)", conn))
                     {
                         cmd.Parameters.AddWithValue("@accountNum", accountNum);
+                        cmd.Parameters.AddWithValue("@headOrg", headOrganizer);
                         cmd.Parameters.AddWithValue("@title", title);
                         cmd.Parameters.AddWithValue("@venue", venue);
                         cmd.Parameters.AddWithValue("@address", address);
@@ -391,7 +393,7 @@ namespace Handog.org
         }
 
         // ==============================
-        // 4. EDIT / SAVE EVENT
+        //  EDIT / SAVE EVENT
         // ==============================
         protected void btnEdit_Click(object sender, EventArgs e)
         {
@@ -475,9 +477,12 @@ namespace Handog.org
         }
 
         // ==============================
-        // 5. NOTIFICATIONS / LOGOUT
+        //  NOTIFICATIONS / LOGOUT
         // ==============================
+        //TODO:: NOTIFICATIONS
+        //CONNECT TO DATABASE
         protected void btnBell_Click(object sender, EventArgs e) => pnlNotifications.Visible = true;
+
         protected void btnCloseNotif_Click(object sender, EventArgs e) => pnlNotifications.Visible = false;
 
         protected void btnLogout_Click(object sender, EventArgs e)

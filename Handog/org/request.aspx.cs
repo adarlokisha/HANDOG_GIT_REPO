@@ -14,7 +14,6 @@ namespace Handog.org
         {
             if (Session["AccountID"] == null || Session["UserRole"].ToString() != "Organizer")
             {
-                //Boot them out if they aren't logged in as an Organizer
                 Response.Redirect("~/web/default.aspx");
             }
 
@@ -25,7 +24,7 @@ namespace Handog.org
         }
 
         // ==============================================================
-        // 1. DATA BINDING
+        //  DATA BINDING
         // ==============================================================
         private void BindRequests()
         {
@@ -51,7 +50,7 @@ namespace Handog.org
         }
 
         // ==============================================================
-        // 2. REPEATER BUTTON CLICKS
+        //  REPEATER BUTTON CLICKS
         // ==============================================================
         protected void rptRequests_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
@@ -59,13 +58,12 @@ namespace Handog.org
 
             if (e.CommandName == "Accept")
             {
-                // Store the ID so we can update it when they hit Publish
+
                 hfAcceptedRequestID.Value = requestID.ToString();
 
                 ClearCreateEventFields();
                 PreFillModalData(requestID);
 
-                // Open the modal to start creating the event!
                 pnlStep1.Visible = true;
                 pnlStep2.Visible = false;
                 pnlCreateEventModal.Visible = true;
@@ -87,7 +85,7 @@ namespace Handog.org
         }
 
         // ==============================================================
-        // 3. CREATE EVENT MODAL LOGIC
+        //  CREATE EVENT LOGIC
         // ==============================================================
         private void PreFillModalData(int requestID)
         {
@@ -95,7 +93,6 @@ namespace Handog.org
             {
                 conn.Open();
 
-                // 1. Fetch Organizer Details to lock them in
                 string orgQuery = "SELECT Firstname, Lastname, Email, ContactNum FROM Account WHERE Account_ID = @AccID";
                 using (SqlCommand cmd = new SqlCommand(orgQuery, conn))
                 {
@@ -108,7 +105,6 @@ namespace Handog.org
                             txtEmail.Text = reader["Email"].ToString();
                             txtContact.Text = reader["ContactNum"].ToString();
 
-                            // Make them uneditable!
                             txtOrgName.ReadOnly = true;
                             txtEmail.ReadOnly = true;
                             txtContact.ReadOnly = true;
@@ -116,7 +112,6 @@ namespace Handog.org
                     }
                 }
 
-                // 2. Fetch Request Nature for the Title
                 string reqQuery = @"SELECT rt.Type_of_Request, 
                                            (a.Firstname + ' ' + a.Lastname) AS RequestorName 
                                     FROM Request r 
@@ -128,7 +123,6 @@ namespace Handog.org
                 {
                     cmd.Parameters.AddWithValue("@ReqNum", requestID);
 
-                    // We use a DataReader here because we are fetching multiple columns now!
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
@@ -158,7 +152,7 @@ namespace Handog.org
         protected void btnCloseCreate_Click(object sender, EventArgs e)
         {
             pnlCreateEventModal.Visible = false;
-            hfAcceptedRequestID.Value = ""; // Clear out the request ID since they cancelled
+            hfAcceptedRequestID.Value = "";
         }
 
         protected void btnPublish_Click(object sender, EventArgs e)
@@ -168,6 +162,7 @@ namespace Handog.org
 
             // Gathering inputs
             string title = txtTitle.Text.Trim();
+            string headOrganizer = txtOrgName.Text.Trim();
             string venue = txtVenue.Text.Trim();
             string address = txtAddress.Text.Trim();
             string note = txtAnnouncement.Text.Trim();
@@ -176,8 +171,7 @@ namespace Handog.org
             string startStr = txtStart.Text.Trim();
             string endStr = txtEnd.Text.Trim();
 
-            // Validation checks
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(venue) || string.IsNullOrEmpty(address) ||
+            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(headOrganizer) || string.IsNullOrEmpty(venue) || string.IsNullOrEmpty(address) ||
                 string.IsNullOrEmpty(dateStr) || string.IsNullOrEmpty(startStr) || string.IsNullOrEmpty(endStr) || string.IsNullOrEmpty(maxStr))
             {
                 lblCreateMsg.Text = "Please fill in all required fields.";
@@ -194,7 +188,6 @@ namespace Handog.org
 
             TimeSpan startTime, endTime;
 
-            // Safely parse Start Time
             if (!TimeSpan.TryParse(startStr, out startTime))
             {
                 if (DateTime.TryParse(startStr, out DateTime dtStart))
@@ -205,7 +198,6 @@ namespace Handog.org
                 }
             }
 
-            // Safely parse End Time
             if (!TimeSpan.TryParse(endStr, out endTime))
             {
                 if (DateTime.TryParse(endStr, out DateTime dtEnd))
@@ -222,17 +214,17 @@ namespace Handog.org
                 {
                     conn.Open();
 
-                    // 1. Publish the new Event
                     string insertQuery = @"
                         INSERT INTO PublishedEvent
-                        (AccountNum, EventTitle, Venue, EventAddress, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement)
+                        (AccountNum, HeadOrganizer, EventTitle, Venue, EventAddress, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement)
                         VALUES
                         ((SELECT AccountNum FROM Account WHERE Account_ID = @accID), 
-                         @title, @venue, @address, @date, @start, @end, @max, @note)";
+                         @headOrg, @title, @venue, @address, @date, @start, @end, @max, @note)";
 
                     using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
                     {
                         cmd.Parameters.AddWithValue("@accID", Session["AccountID"]);
+                        cmd.Parameters.AddWithValue("@headOrg", headOrganizer);
                         cmd.Parameters.AddWithValue("@title", title);
                         cmd.Parameters.AddWithValue("@venue", venue);
                         cmd.Parameters.AddWithValue("@address", address);
@@ -245,7 +237,6 @@ namespace Handog.org
                         cmd.ExecuteNonQuery();
                     }
 
-                    // 2. Mark the original request as accepted!
                     if (!string.IsNullOrEmpty(hfAcceptedRequestID.Value))
                     {
                         string updateReqQuery = "UPDATE Request SET Is_Accepted = 1 WHERE RequestNum = @ReqNum";
@@ -257,7 +248,6 @@ namespace Handog.org
                     }
                 }
 
-                // Cleanup and Refresh
                 pnlCreateEventModal.Visible = false;
                 hfAcceptedRequestID.Value = "";
                 BindRequests();
@@ -280,9 +270,12 @@ namespace Handog.org
         }
 
         // ==============================================================
-        // 4. HEADER ACTIONS & NOTIFICATIONS
+        //  HEADER ACTIONS & NOTIFICATIONS
         // ==============================================================
+        // TODO: Notifications
+        // CONNECT TO DATABASE
         protected void btnBell_Click(object sender, EventArgs e) => pnlNotifications.Visible = true;
+
         protected void btnCloseNotif_Click(object sender, EventArgs e) => pnlNotifications.Visible = false;
 
         protected void btnLogout_Click(object sender, EventArgs e)

@@ -14,8 +14,6 @@ namespace Handog.org
     {
         private readonly string connString = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
 
-        // this is for checking who inputted locale
-        // This property stores the ID for the duration of the page session
         private int CurrentUserNumericID
         {
             get { return ViewState["UserNumericID"] != null ? (int)ViewState["UserNumericID"] : -1; }
@@ -26,7 +24,6 @@ namespace Handog.org
         {
             if (Session["AccountID"] == null || Session["UserRole"].ToString() != "Organizer")
             {
-                //Boot them out if they aren't logged in as an Organizer
                 Response.Redirect("~/web/default.aspx");
             }
 
@@ -55,7 +52,6 @@ namespace Handog.org
             }
         }
 
-        //checks if user is the one who added the locale
 
         protected bool IsOwner(object accountNumFromRow)
         {
@@ -67,7 +63,7 @@ namespace Handog.org
         protected void btnLogout_Click(object sender, EventArgs e)
         {
             Session.Abandon();
-            Response.Redirect("~/web/default.aspx"); // Go up one level to root for login
+            Response.Redirect("~/web/default.aspx"); 
         }
 
         // --- ORGANIZER HANDLERS ---
@@ -76,7 +72,6 @@ namespace Handog.org
         {
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                // Note: Ensure your table columns match: LocaleName, City, Barangay
                 string query = "SELECT Locale_ID, AccountNum, LocaleName, City, Barangay FROM Locale ORDER BY LocaleName ASC";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -92,19 +87,17 @@ namespace Handog.org
         }
 
 
-        // Logic to save locale details to Azure DB 
         protected void btnAddLocale_Click(object sender, EventArgs e)
         {
             if (Session["AccountID"] == null) return;
 
-            string stringID = Session["AccountID"].ToString(); // This is "A0001"
+            string stringID = Session["AccountID"].ToString();
             int numericNum = 0;
 
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
 
-                // 1. Get the actual AccountNum (INT) based on the Account_ID (A0001)
                 string getIntQuery = "SELECT AccountNum FROM Account WHERE Account_ID = @AccountID";
                 using (SqlCommand cmdGet = new SqlCommand(getIntQuery, conn))
                 {
@@ -117,12 +110,12 @@ namespace Handog.org
                     }
                     else
                     {
-                        // Handle case where account isn't found
+
                         return;
                     }
                 }
 
-                // 2. Now Insert into Locale using the INT numericNum
+
                 string insertQuery = "INSERT INTO Locale (LocaleName, City, Barangay, AccountNum) " +
                                      "VALUES (@Locale, @City, @Barangay, @AccNum)";
 
@@ -157,13 +150,11 @@ namespace Handog.org
         // EDIT LOCALE BUTTON FUNCTION
         protected void gvLocales_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            // 1. Single safety check: if argument is empty, stop immediately.
             if (e.CommandArgument == null || string.IsNullOrEmpty(e.CommandArgument.ToString()))
             {
                 return;
             }
 
-            // 2. Extract the ID
             string localeID = e.CommandArgument.ToString();
 
            
@@ -210,7 +201,6 @@ namespace Handog.org
         {
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                // Safety: Ensure only the owner can update
                 string query = "UPDATE Locale SET LocaleName=@Name, City=@City, Barangay=@Brgy " +
                                "WHERE Locale_ID=@ID AND AccountNum=@AccNum";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -239,7 +229,7 @@ namespace Handog.org
         {
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                // Add a check in the WHERE clause: AccountNum must match current user
+
                 string query = "DELETE FROM Locale WHERE Locale_ID = @ID AND AccountNum = @AccNum";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
