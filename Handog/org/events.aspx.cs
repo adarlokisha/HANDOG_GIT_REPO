@@ -41,6 +41,7 @@ namespace Handog.org
                        Venue,
                        ImplementationDate as EventDate,
                        (FORMAT(EventStartTime, 'hh:mm tt') + ' - ' + FORMAT(EventEndTime, 'hh:mm tt')) as TimeStr,
+                       VolunteerCapacity,
                        Announcement as Description,
                        1 as IsOwner
                 FROM PublishedEvent
@@ -69,6 +70,7 @@ namespace Handog.org
                        Venue,
                        ImplementationDate as EventDate,
                        (FORMAT(EventStartTime, 'hh:mm tt') + ' - ' + FORMAT(EventEndTime, 'hh:mm tt')) as TimeStr,
+                        VolunteerCapacity,
                        Announcement as Description,
                        CASE WHEN AccountNum = @accNum THEN 1 ELSE 0 END as IsOwner
                 FROM PublishedEvent

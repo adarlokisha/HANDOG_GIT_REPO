@@ -31,7 +31,7 @@ namespace Handog.web
             string connString = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                string query = "SELECT PublishedEventNum, EventTitle, EventAddress, Venue, ImplementationDate, EventStartTime, EventEndTime, Announcement FROM PublishedEvent";
+                string query = "SELECT PublishedEventNum, EventTitle, EventAddress, Venue, ImplementationDate, EventStartTime, EventEndTime, VolunteerCapacity, Announcement FROM PublishedEvent";
                 SqlDataAdapter da = new SqlDataAdapter(query, conn);
                 DataTable dt = new DataTable();
                 da.Fill(dt);

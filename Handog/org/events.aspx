@@ -148,7 +148,7 @@
                             </Columns>
                         </asp:GridView>
                     </div>
-                    <h3>EXPECTED NUMBER OF PARTICIPANTS: <asp:Label ID="lblExpectedPart" runat="server" Text="0" /></h3>
+                    <h3>EXPECTED NUMBER OF ATTENDEES: <asp:Label ID="lblExpectedPart" runat="server" Text="0" /></h3>
                 </asp:Panel>
             </asp:Panel>
 
