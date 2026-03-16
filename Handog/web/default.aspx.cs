@@ -11,7 +11,7 @@ namespace Handog.web
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // No specific Page_Load logic needed for modal/login
+            // No specific Page_Load logic needed for login
         }
 
         // =========================
@@ -34,8 +34,6 @@ namespace Handog.web
             {
                 Session["UserEmail"] = email;
                 Session["UserRole"] = role;
-
-                // Store both the database AccountNum and the user-facing AccountID (like A000#)
                 Session["AccountNum"] = GetAccountNum(email);
                 Session["AccountID"] = GetUserFacingAccountID(email);
 
@@ -161,7 +159,7 @@ namespace Handog.web
                     cmd.ExecuteNonQuery();
                 }
 
-                // Reset form
+                // Reset form - clear everything basically.
                 txtFirstName.Text = txtLastName.Text = txtSignupEmail.Text = "";
                 txtContact.Text = txtSignupPassword.Text = txtChurchID.Text = "";
                 rbVolunteer.Checked = true;

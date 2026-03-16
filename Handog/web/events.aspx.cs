@@ -84,7 +84,6 @@ namespace Handog.web
 
         public bool IsUserRegistered(object eventNum)
         {
-            // Use AccountID if that is what you set during login
             if (Session["AccountID"] == null) return false;
 
             using (SqlConnection conn = new SqlConnection(connString))
@@ -103,23 +102,20 @@ namespace Handog.web
         }
         protected void btnLogout_Click(object sender, EventArgs e)
         {
-            Session.Abandon(); // Clears the user session
-            Response.Redirect("default.aspx"); // Sends them back to login
+            Session.Abandon();
+            Response.Redirect("default.aspx"); 
         }
         protected void btnBell_Click(object sender, EventArgs e)
         {
             pnlNotifications.Visible = true;
-            // This ensures the overlay uses flexbox to center the card
             pnlNotifications.Style.Add("display", "flex");
         }
 
         protected void btnCloseNotif_Click(object sender, EventArgs e)
         {
             pnlNotifications.Visible = false;
-            // Remove the style when closing
             pnlNotifications.Style.Remove("display");
         }
-        // Update the existing "View Details" and "Register" buttons in your events list to call these:
         protected void btnViewDetails_Click(object sender, EventArgs e)
         {
             string eventID = ((Button)sender).CommandArgument;
@@ -135,8 +131,6 @@ namespace Handog.web
             ViewState["SelectedEventID"] = eventID;
 
             LoadModalData(eventID);
-
-            // Load event data into the modal labels (Similar to your ViewDetails logic)
             pnlRegistration.Visible = true;
             pnlRegistration.Style.Add("display", "flex");
         }
@@ -155,7 +149,6 @@ namespace Handog.web
 
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
-                    // Insert using the subquery to find the correct AccountNum
                     string query = @"INSERT INTO EventVolunteers (PublishedEventNum, AccountNum, VolunteerType, Is_Accepted) 
                              VALUES (@eventID, (SELECT AccountNum FROM Account WHERE Account_ID = @accID), @role, 1)";
 
@@ -168,7 +161,6 @@ namespace Handog.web
                     cmd.ExecuteNonQuery();
                 }
 
-                // Success: Hide modal and Refresh list
                 pnlRegistration.Visible = false;
                 pnlRegistration.Style.Remove("display");
                 BindEvents();
@@ -177,11 +169,10 @@ namespace Handog.web
             }
             catch (Exception ex)
             {
-                // This will tell you if it's a Database error (like a primary key violation)
+                // Just in case if it's a Database error
                 ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Database Error: {ex.Message}');", true);
             }
         }
-        // Global close for all modals
         protected void btnCloseModals_Click(object sender, EventArgs e)
         {
             pnlRegistration.Visible = false;
@@ -194,7 +185,6 @@ namespace Handog.web
         }
         private void LoadModalData(string eventID)
         {
-            // 1. Session Check
             if (Session["AccountID"] == null)
             {
                 Response.Redirect("default.aspx");
@@ -205,7 +195,6 @@ namespace Handog.web
 
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                // 2. Define Queries
                 string eventQuery = @"SELECT E.*, (A.Firstname + ' ' + A.Lastname) as OrganizerName, A.Email as OrgEmail, A.ContactNum as OrgPhone 
                              FROM PublishedEvent E 
                              INNER JOIN Account A ON E.AccountNum = A.AccountNum 
@@ -215,7 +204,7 @@ namespace Handog.web
 
                 conn.Open();
 
-                // 3. Populate Event Details (Registration & View Details Modals)
+                // Populate Event Details 
                 using (SqlCommand cmd = new SqlCommand(eventQuery, conn))
                 {
                     cmd.Parameters.AddWithValue("@id", eventID);
@@ -274,10 +263,10 @@ namespace Handog.web
                             lblDetMax.Text = capacity;
                             lblDetAnnouncement.Text = announcement;
                         }
-                    } // Reader 1 closes here
+                    }
                 }
 
-                // 4. Populate Logged-in User Information (Registration Modal Fields)
+                // Populate Logged-in User Information
                 using (SqlCommand userCmd = new SqlCommand(userQuery, conn))
                 {
                     userCmd.Parameters.AddWithValue("@accID", accountID);
@@ -294,7 +283,7 @@ namespace Handog.web
                             txtRegEmail.ReadOnly = true;
                             txtRegPhone.ReadOnly = true;
                         }
-                    } // Reader 2 closes here
+                    } 
                 }
             }
         }
