@@ -87,20 +87,18 @@ namespace Handog.web
         protected void btnBell_Click(object sender, EventArgs e)
         {
             pnlNotifications.Visible = true;
-            // This ensures the overlay uses flexbox to center the card
             pnlNotifications.Style.Add("display", "flex");
         }
 
         protected void btnCloseNotif_Click(object sender, EventArgs e)
         {
             pnlNotifications.Visible = false;
-            // Remove the style when closing
             pnlNotifications.Style.Remove("display");
         }
         protected void btnLogout_Click(object sender, EventArgs e)
         {
-            Session.Abandon(); // Clears the user session
-            Response.Redirect("default.aspx"); // Sends them back to login
+            Session.Abandon(); 
+            Response.Redirect("default.aspx"); 
         }
 
         // ==============================
@@ -124,24 +122,8 @@ namespace Handog.web
                 return count > 0;
             }
         }
-        protected void btnLogout_Click(object sender, EventArgs e)
-        {
-            Session.Abandon();
-            Response.Redirect("default.aspx"); 
-        }
-        protected void btnBell_Click(object sender, EventArgs e)
-        {
-            pnlNotifications.Visible = true;
-            pnlNotifications.Style.Add("display", "flex");
-        }
-
-        protected void btnCloseNotif_Click(object sender, EventArgs e)
-        {
-            pnlNotifications.Visible = false;
-            pnlNotifications.Style.Remove("display");
-        }
-            pnlNotifications.Style.Remove("display");
-        }
+        
+        
         // Update the existing "View Details" and "Register" buttons in your events list to call these:
         protected void btnViewDetails_Click(object sender, EventArgs e)
         {
@@ -266,18 +248,18 @@ namespace Handog.web
                             lblRegStart.Text = start;
                             lblRegEnd.Text = end;
                             lblRegMax.Text = capacity;
-                        // --- POPULATE REGISTRATION MODAL (lblReg) ---
-                        lblRegEventTitleHeader.Text = title;
-                        lblRegTitle.Text = title;
-                        lblRegOrganizer.Text = organizer;
-                        lblRegAddress.Text = address;
-                        lblRegVenue.Text = venue; 
-                        lblRegEmail.Text = email;
-                        lblRegContact.Text = contact;
-                        lblRegDate.Text = date;                            
-                        lblRegStart.Text = start;
-                        lblRegEnd.Text = end;
-                        lblRegMax.Text = capacity;
+                            // --- POPULATE REGISTRATION MODAL (lblReg) ---
+                            lblRegEventTitleHeader.Text = title;
+                            lblRegTitle.Text = title;
+                            lblRegOrganizer.Text = organizer;
+                            lblRegAddress.Text = address;
+                            lblRegVenue.Text = venue; 
+                            lblRegEmail.Text = email;
+                            lblRegContact.Text = contact;
+                            lblRegDate.Text = date;                            
+                            lblRegStart.Text = start;
+                            lblRegEnd.Text = end;
+                            lblRegMax.Text = capacity;
 
                             // Populate View Details Modal Labels
                             lblDetEventTitleHeader.Text = title;
@@ -290,11 +272,9 @@ namespace Handog.web
                             lblDetDate.Text = date;
                             lblDetStart.Text = start;
                             lblDetEnd.Text = end;
-                    }
-                            lblDetAnnouncement.Text = announcement;
                         }
-                // Populate Logged-in User Information
-                }
+
+                    }
 
                 // 4. Populate Logged-in User Information (Registration Modal Fields)
                 using (SqlCommand userCmd = new SqlCommand(userQuery, conn))
