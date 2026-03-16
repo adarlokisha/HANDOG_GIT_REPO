@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="~/images/HandogLogo2.png" runat="server" />
     <link href="~/stylesheet/home.css?v=2" rel="stylesheet" type="text/css" />
 </head>
+
 <body>
     <form id="form1" runat="server">
         
@@ -22,6 +23,7 @@
             </div>
         </header>
 
+        <!-- ABOUT US -->
         <main>
             <section class="hero-section">
                 <div class="bell-container">
@@ -41,6 +43,7 @@
                 </div>
             </section>
 
+            <!-- LOCALES -->
             <section class="locales-section">
                 <h2 class="section-title">List of Locales</h2>
                 <div class="table-container">
@@ -68,6 +71,7 @@
                 </div>
             </section>
 
+            <!-- STORY SECTION -->
             <section class="story-section">
                 <h2 class="story-title">Our Story</h2>
                 <div class="story-card">
@@ -78,12 +82,15 @@
             </section>
         </main>
 
+        <!-- NOTIFICATION MODAL-->
         <asp:Panel ID="pnlNotifications" runat="server" CssClass="modal-overlay" Visible="false">
             <div class="notification-card">
+                <!-- SModal header -->
                 <div class="modal-header">
                     <asp:Image ID="imgModalBell" runat="server" ImageUrl="~/images/bell-icon.png" CssClass="modal-bell-icon" />
                     <span class="modal-title">NOTIFICATIONS</span>
                 </div>
+                <!-- Notification List -->
                 <div class="notification-list">
                     <div class="notif-item">
                         <i class="info-icon">ⓘ</i> <span>New event has been added!</span>
@@ -92,6 +99,7 @@
                         <i class="info-icon">ⓘ</i> <span>You've been accepted to volunteer!</span>
                     </div>
                 </div>
+                <!-- CLOSE BUTTON / Footer-->
                 <div class="modal-footer">
                     <asp:LinkButton ID="btnCloseNotif" runat="server" OnClick="btnCloseNotif_Click" CssClass="modal-close">
                         <span class="close-arrow">➔</span> CLOSE

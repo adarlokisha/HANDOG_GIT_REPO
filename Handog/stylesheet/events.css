@@ -159,10 +159,9 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1; /* Sits behind the buttons */
+    z-index: 1; 
     background-size: cover;
     background-position: center;
-    /* This adds a slight teal/blue overlay to match your screenshot */
     background-color: rgba(18, 172, 176, 0.3);
     background-blend-mode: overlay;
 }
@@ -208,31 +207,30 @@ body {
     justify-content: center;
     padding: 20px;
     border-left: 1px solid #333;
-    position: relative; /* Required for absolute positioning of background */
-    overflow: hidden; /* Keeps the image inside the card corners */
+    position: relative; 
+    overflow: hidden; 
 }
 .status-container {
     position: relative;
     z-index: 10;
     display: flex;
-    flex-direction: column; /* Stack button and label vertically */
+    flex-direction: column; 
     align-items: center;
     width: 100%;
-    gap: 10px; /* Space between button and JOINED text */
+    gap: 10px; 
 }
 .joined-status {
-    display: block; /* Ensure it takes its own line */
-    width: 100%; /* Help with centering */
+    display: block; 
+    width: 100%; 
     text-align: center;
     color: #ffffff;
     font-weight: 900;
     text-transform: uppercase;
     text-decoration: underline;
     font-size: 14px;
-    margin: 10px; /* Remove default margins */
+    margin: 10px; 
 }
 
-/* Adjust the button slightly if needed to look exactly like the reference */
 
 .image-1 {
     background-image: linear-gradient(rgba(18, 172, 176, -2), rgba(18, 172, 176, 0)), url('../images/Event1.jpg');
@@ -246,16 +244,16 @@ body {
     background-color: #fbc14b;
     color: #000000;
     font-weight: 900;
-    font-size: 14px; /* Scaled down slightly to match reference */
+    font-size: 14px; 
     border: none;
-    border-radius: 10px; /* Reduced radius for a more rectangular look like the pic */
+    border-radius: 10px;
     padding: 10px 25px;
     cursor: pointer;
     box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.4);
     transition: transform 0.1s;
-    z-index: 10; /* Ensures it stays in front of the background */
+    z-index: 10;
     display: block;
-    width: 160px; /* Adjust based on your design */
+    width: 160px; 
 }
 
     .btn-action:active {
@@ -265,8 +263,39 @@ body {
     .btn-action:hover {
         opacity: 0.9;
     }
+/* ==========================================================================
+   MODAL SHARED HEADER
+   ========================================================================== */
+.modal-header-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 
-    /* Registration Modal Specifics */
+.back-icon-img {
+    height: 35px;
+    width: 35px;
+}
+
+.modal-main-title {
+    font-weight: 900;
+    font-size: 28px;
+}
+
+.sub-title {
+    font-size: 12px;
+    color: #888;
+    margin-top: -5px;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 15px 0;
+}
+/* ==========================================================================
+   REGISTRATION MODAL
+   ========================================================================== */
 .registration-card {
     background: white;
     width: 90%;
@@ -311,7 +340,7 @@ body {
 
 .details-list p { font-size: 13px; margin-bottom: 6px; }
 
-/* The Floating White Box */
+/* The Floating Box */
 .floating-reg-box {
     background: #ffffff;
     border-radius: 25px;
@@ -350,7 +379,6 @@ body {
     color: #888;
 }
 
-/* Aligning the button inside the radio group as per image */
 .reg-float-btn {
     margin-left: auto;
     padding: 8px 20px !important;
@@ -368,7 +396,6 @@ body {
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.6);
-    /* Remove 'display: flex' from here */
     justify-content: center;
     align-items: center;
     z-index: 99999;
@@ -418,7 +445,7 @@ body {
 }
 
     .notif-item.success {
-        color: #2ecc71; /* Green text for accepted notifications */
+        color: #2ecc71; 
     }
 
 .info-icon {
@@ -457,7 +484,10 @@ body {
     text-decoration: none;
     font-size: 12px;
 }
-/* MODAL SHARED HEADER */
+
+/* ==========================================================================
+   REGISTRATION CARD
+   ========================================================================== */
 .modal-header-row {
     display: flex;
     align-items: center;
@@ -485,8 +515,6 @@ body {
     border-top: 1px solid #ccc;
     margin: 15px 0;
 }
-
-/* REGISTRATION CARD */
 .registration-card {
     background: white;
     width: 90%;
@@ -507,14 +535,6 @@ body {
     margin-bottom: 5px;
 }
 /* Registration Modal Specifics */
-.registration-card {
-    background: white;
-    width: 90%;
-    max-width: 900px;
-    padding: 40px;
-    border-radius: 5px;
-}
-
 .reg-modal-header {
     display: flex;
     justify-content: space-between;
@@ -621,7 +641,6 @@ body {
     color: #888;
 }
 
-/* Aligning the button inside the radio group as per image */
 .reg-float-btn {
     margin-left: auto;
     padding: 8px 20px !important;

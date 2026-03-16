@@ -22,6 +22,7 @@
             </div>
         </header>
 
+        <!-- SEARCH AND NOTIFICATION -->
         <main class="main-content">
             <div class="search-header">
                 <div class="search-bar-container">
@@ -35,11 +36,14 @@
                 </div>
             </div>
 
+            <!-- MAIN CONTENT -->
             <h1 class="page-title">EVENTS</h1>
 
+            <!-- EVENTS PANEL -->
             <div class="events-list">
                 <asp:Repeater ID="rptEvents" runat="server">
                     <ItemTemplate>
+                        <!-- Event Information Summary -->
                         <div class="event-card">
                             <div class="event-info">
                                 <h2 class="event-name"><%# Eval("EventTitle") %></h2>
@@ -51,10 +55,9 @@
                                 <p class="event-desc"><%# Eval("Announcement") %></p>
                             </div>
 
+                            <!-- View Details and Joined -->
                             <div class="event-image">
-
                                 <div class="event-card-bg image-<%# Container.ItemIndex % 2 + 1 %>"></div>
-
                                 <div class="status-container">
                                     <%-- Shows VIEW DETAILS and JOINED status only if user IS registered --%>
                                     <asp:PlaceHolder ID="phJoined" runat="server" Visible='<%# IsUserRegistered(Eval("PublishedEventNum")) %>'>
@@ -74,6 +77,7 @@
                 </asp:Repeater>
             </div> 
 
+            <!-- VOLUNTEER REGISTRATION MODAL -->
             <asp:Panel ID="pnlRegistration" runat="server" CssClass="modal-overlay" Visible="false">
                 <div class="registration-card">
                     <div class="reg-modal-header">
@@ -92,6 +96,7 @@
 
                     <hr class="reg-divider" />
 
+                    <!-- Event Details -->
                     <div class="reg-content-split">
                         <div class="reg-details-side">
                             <h3 class="section-underline-title">EVENT DETAILS</h3>
@@ -109,14 +114,17 @@
                             </div>
                         </div>
 
+                        <!-- Registration Form -->
                         <div class="reg-form-side">
                             <div class="floating-reg-box">
                                 <label class="field-label">REGISTER AS *</label>
+                                <!-- Volunteer or Participant -->
                                 <div class="reg-radio-group">
                                     <asp:RadioButton ID="rbVolunteer" runat="server" GroupName="RegRole" Text="VOLUNTEER" />
                                     <asp:RadioButton ID="rbParticipant" runat="server" GroupName="RegRole" Text="PARTICIPANT" />
                                 </div>
 
+                                <!-- Read-only (Contents from database) -->
                                 <label class="field-label">FULL NAME</label>
                                 <asp:TextBox ID="txtRegName" runat="server" CssClass="reg-input-full"></asp:TextBox>
 
@@ -131,6 +139,7 @@
                                     </div>
                                 </div>
 
+                                <!-- Terms and Conditions -->
                                 <label class="field-label">I AGREE TO THE <a href="#">TERMS AND CONDITIONS</a> *</label>
                                 <div class="reg-radio-group">
                                     <asp:RadioButton ID="rbAgreeYes" runat="server" GroupName="Consent" Text="YES" />
@@ -144,8 +153,10 @@
                 </div>
             </asp:Panel>
 
+            <!-- VIEW EVENT DETAILS MODAL-->
             <asp:Panel ID="pnlEventDetails" runat="server" CssClass="modal-overlay" Visible="false">
                 <div class="details-card">
+                    <!-- Modal Header -->
                     <div class="modal-header-row">
                        <asp:LinkButton ID="btnCloseDetails" runat="server" OnClick="btnCloseModals_Click" CssClass="back-btn-link">
                             <div>
@@ -155,6 +166,7 @@
                         <h1 class="modal-main-title">EVENTS</h1>
                     </div>
 
+                     <!-- Event Details -->
                     <div class="details-container-box">
                         <div class="details-header-yellow">
                             <div class="category-tag">COMMUNITY ENGAGEMENT</div>
@@ -184,6 +196,7 @@
             </asp:Panel>
         </main>
 
+         <!-- NOTIFICATION MODAL -->
         <asp:Panel ID="pnlNotifications" runat="server" CssClass="modal-overlay" Visible="false">
             <div class="notification-card">
                 <div class="modal-header">

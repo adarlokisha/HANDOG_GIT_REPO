@@ -26,6 +26,7 @@ namespace Handog.web
                 BindLocales();
             }
         }
+        // Table for Locales (Gridview)
         private void BindLocales()
         {
             // Update "YourTableName" to the actual name of the table in your image (e.g., Locales)
@@ -57,11 +58,12 @@ namespace Handog.web
             Session.Abandon(); // Clears the user session
             Response.Redirect("default.aspx"); // Sends them back to login
         }
+
+        // Noticication
         protected void btnBell_Click(object sender, EventArgs e)
         {
             pnlNotifications.Visible = true;
         }
-
         protected void btnCloseNotif_Click(object sender, EventArgs e)
         {
             pnlNotifications.Visible = false;

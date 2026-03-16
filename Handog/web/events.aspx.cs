@@ -26,6 +26,7 @@ namespace Handog.web
                 BindEvents();
             }
         }
+        // Fetches all published events from database and binds them to the rptEvents Repeater.
         private void BindEvents()
         {
             string connString = ConfigurationManager.ConnectionStrings["HandogDB"].ConnectionString;
@@ -80,8 +81,31 @@ namespace Handog.web
                 }
             }
         }
+        // ==============================
+        // NOTIFICATIONS and LOGOUT
+        // ==============================
+        protected void btnBell_Click(object sender, EventArgs e)
+        {
+            pnlNotifications.Visible = true;
+            // This ensures the overlay uses flexbox to center the card
+            pnlNotifications.Style.Add("display", "flex");
+        }
 
+        protected void btnCloseNotif_Click(object sender, EventArgs e)
+        {
+            pnlNotifications.Visible = false;
+            // Remove the style when closing
+            pnlNotifications.Style.Remove("display");
+        }
+        protected void btnLogout_Click(object sender, EventArgs e)
+        {
+            Session.Abandon(); // Clears the user session
+            Response.Redirect("default.aspx"); // Sends them back to login
+        }
 
+        // ==============================
+        // REGISTRATION LOGIC
+        // ==============================
         public bool IsUserRegistered(object eventNum)
         {
             // Use AccountID if that is what you set during login
@@ -101,24 +125,8 @@ namespace Handog.web
                 return count > 0;
             }
         }
-        protected void btnLogout_Click(object sender, EventArgs e)
-        {
-            Session.Abandon(); // Clears the user session
-            Response.Redirect("default.aspx"); // Sends them back to login
-        }
-        protected void btnBell_Click(object sender, EventArgs e)
-        {
-            pnlNotifications.Visible = true;
-            // This ensures the overlay uses flexbox to center the card
-            pnlNotifications.Style.Add("display", "flex");
-        }
-
-        protected void btnCloseNotif_Click(object sender, EventArgs e)
-        {
-            pnlNotifications.Visible = false;
-            // Remove the style when closing
-            pnlNotifications.Style.Remove("display");
-        }
+       
+        // ==============================
         // Update the existing "View Details" and "Register" buttons in your events list to call these:
         protected void btnViewDetails_Click(object sender, EventArgs e)
         {
@@ -155,7 +163,6 @@ namespace Handog.web
 
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
-                    // Insert using the subquery to find the correct AccountNum
                     string query = @"INSERT INTO EventVolunteers (PublishedEventNum, AccountNum, VolunteerType, Is_Accepted) 
                              VALUES (@eventID, (SELECT AccountNum FROM Account WHERE Account_ID = @accID), @role, 1)";
 
@@ -181,7 +188,10 @@ namespace Handog.web
                 ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Database Error: {ex.Message}');", true);
             }
         }
-        // Global close for all modals
+        
+        // ==============================
+        // MODAL MANAGEMENT
+        // ==============================
         protected void btnCloseModals_Click(object sender, EventArgs e)
         {
             pnlRegistration.Visible = false;
@@ -192,6 +202,9 @@ namespace Handog.web
             pnlEventDetails.Style.Remove("display");
             pnlNotifications.Style.Remove("display");
         }
+
+        // Pulls data for both the View Details and Registration modals.
+        // Retrieves event information and auto-fills logged-in user data.
         private void LoadModalData(string eventID)
         {
             // 1. Session Check
@@ -274,10 +287,10 @@ namespace Handog.web
                             lblDetMax.Text = capacity;
                             lblDetAnnouncement.Text = announcement;
                         }
-                    } // Reader 1 closes here
+                    } 
                 }
 
-                // 4. Populate Logged-in User Information (Registration Modal Fields)
+                // 4. Fetch User Information for auto-filling the Registration Form
                 using (SqlCommand userCmd = new SqlCommand(userQuery, conn))
                 {
                     userCmd.Parameters.AddWithValue("@accID", accountID);
@@ -289,12 +302,12 @@ namespace Handog.web
                             txtRegEmail.Text = userReader["Email"].ToString();
                             txtRegPhone.Text = userReader["ContactNum"].ToString();
 
-                            // Make fields read-only as per standard registration behavior
+                            // Make fields read-only 
                             txtRegName.ReadOnly = true;
                             txtRegEmail.ReadOnly = true;
                             txtRegPhone.ReadOnly = true;
                         }
-                    } // Reader 2 closes here
+                    }
                 }
             }
         }
