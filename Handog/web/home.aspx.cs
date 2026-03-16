@@ -17,7 +17,6 @@ namespace Handog.web
         {
             if (Session["AccountID"] == null || Session["UserRole"].ToString() != "Volunteer")
             {
-                //Boot them out if they aren't logged in as an Volunteer
                 Response.Redirect("~/web/default.aspx");
             }
 
@@ -29,7 +28,6 @@ namespace Handog.web
         // Table for Locales (Gridview)
         private void BindLocales()
         {
-            // Update "YourTableName" to the actual name of the table in your image (e.g., Locales)
             string query = "SELECT Locale_ID, LocaleName, Barangay, City FROM Locale ORDER BY LocaleName ASC";
 
             using (SqlConnection con = new SqlConnection(connString))
@@ -55,8 +53,8 @@ namespace Handog.web
         }
         protected void btnLogout_Click(object sender, EventArgs e)
         {
-            Session.Abandon(); // Clears the user session
-            Response.Redirect("default.aspx"); // Sends them back to login
+            Session.Abandon(); 
+            Response.Redirect("default.aspx"); 
         }
 
         // Noticication
