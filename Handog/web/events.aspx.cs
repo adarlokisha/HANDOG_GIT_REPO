@@ -248,6 +248,9 @@ namespace Handog.web
                             lblRegStart.Text = start;
                             lblRegEnd.Text = end;
                             lblRegMax.Text = capacity;
+                            lblDetMax.Text = capacity;
+                            lblDetAnnouncement.Text = announcement;
+
                             // --- POPULATE REGISTRATION MODAL (lblReg) ---
                             lblRegEventTitleHeader.Text = title;
                             lblRegTitle.Text = title;
@@ -260,6 +263,8 @@ namespace Handog.web
                             lblRegStart.Text = start;
                             lblRegEnd.Text = end;
                             lblRegMax.Text = capacity;
+                            lblDetMax.Text = capacity;
+                            lblDetAnnouncement.Text = announcement;
 
                             // Populate View Details Modal Labels
                             lblDetEventTitleHeader.Text = title;
@@ -272,6 +277,9 @@ namespace Handog.web
                             lblDetDate.Text = date;
                             lblDetStart.Text = start;
                             lblDetEnd.Text = end;
+                            lblRegMax.Text = capacity;
+                            lblDetMax.Text = capacity;
+                            lblDetAnnouncement.Text = announcement;
                         }
 
                     }
